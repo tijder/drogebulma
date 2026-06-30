@@ -633,7 +633,12 @@ a.is-sr-only:focus {
 
 /* Video embed ({{< video >}}) + the gallery clips on the game page. A responsive
    16:9 player; the gallery reuses the same <figure>. */
-.video-embed { margin: 1.5rem 0; }
+/* Contained + centred like a standalone body image (max-width 40rem), rather than
+   spanning the full content column. The trophy gallery resets this (grid cell). */
+.video-embed {
+  max-width: 40rem;
+  margin: 1.5rem auto;
+}
 .video-embed video {
   display: block;
   width: 100%;
@@ -647,7 +652,7 @@ a.is-sr-only:focus {
   color: var(--bulma-text-weak);
   text-align: center;
 }
-.trophy-gallery .video-embed { margin: 0; }
+.trophy-gallery .video-embed { max-width: none; margin: 0; }
 
 /* Static GPX route map ({{< route >}}). Tiles + SVG polyline, no JS.
    The map is a self-contained "card": capped to its native tile resolution
