@@ -27,7 +27,7 @@ links are hidden in print via main.css.
 <header class="cv-header">
   {{- with $photo }}
   <figure class="cv-photo image">
-    <img src="{{ . }}" alt="{{ $name }}" loading="lazy">
+    <img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="{{ $name }}" loading="lazy">
   </figure>
   {{- end }}
   <div class="cv-header-body">

@@ -18,7 +18,7 @@ from the site-wide [params.author] table. The name falls back to the site title.
       {{- with $avatar }}
       <div class="media-left">
         <figure class="image is-48x48">
-          <img src="{{ . }}" alt="{{ $name }}">
+          <img src="{{ strings.TrimPrefix "/" . | relURL }}" alt="{{ $name }}">
         </figure>
       </div>
       {{- end }}
