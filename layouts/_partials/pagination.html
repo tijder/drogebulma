@@ -1,0 +1,24 @@
+{{- /*
+Renders previous/next pagination controls for a paginated page, using Bulma's
+pagination component with translated labels and disabled end states.
+
+@context {page} The paginated page (must expose .Paginator).
+
+@example: {{ partial "pagination.html" . }}
+*/ -}}
+{{- with .Paginator }}
+  {{- if or .HasPrev .HasNext }}
+  <nav class="pagination" role="navigation" aria-label="{{ i18n "pagination" }}">
+    {{- if .HasPrev }}
+    <a class="pagination-previous" href="{{ .Prev.URL }}" rel="prev">{{ i18n "previous" }}</a>
+    {{- else }}
+    <a class="pagination-previous" disabled>{{ i18n "previous" }}</a>
+    {{- end }}
+    {{- if .HasNext }}
+    <a class="pagination-next" href="{{ .Next.URL }}" rel="next">{{ i18n "next" }}</a>
+    {{- else }}
+    <a class="pagination-next" disabled>{{ i18n "next" }}</a>
+    {{- end }}
+  </nav>
+  {{- end }}
+{{- end }}

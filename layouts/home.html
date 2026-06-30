@@ -1,0 +1,82 @@
+{{ define "main" }}
+
+{{/* ---------- Hero (bulma.io‑stijl) ---------- */}}
+<section class="hero is-primary is-bold is-medium">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">{{ .Title }}</h1>
+      {{ with .Content }}
+      <div class="subtitle is-4 content">{{ . }}</div>
+      {{ end }}
+      {{ with index site.Menus "main" }}
+      <div class="buttons is-centered">
+        {{ range . }}
+        {{/* Skip entries whose page is absent in this language (empty .URL) — same
+             cross-language guard as menu.html, so we never link to the other site. */}}
+        {{ $label := or (T .Identifier) .Name }}
+        {{ with .URL }}
+        <a class="button is-light is-medium" href="{{ . }}">{{ $label }}</a>
+        {{ end }}
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+{{/* ---------- Shorts (max 3) ---------- */}}
+{{ partial "trophy/home-bar.html" . }}
+
+{{ $shorts := where site.RegularPages "Section" "shorts" | first 3 }}
+{{ if gt (len $shorts) 0 }}
+{{ $href := "" }}{{ with site.GetPage "/shorts" }}{{ $href = .RelPermalink }}{{ end }}
+{{ $color := "primary" }}
+<section class="section home-section" style="--accent-h:var(--bulma-{{ $color }}-h);--accent-s:var(--bulma-{{ $color }}-s);--accent-l:var(--bulma-{{ $color }}-l)">
+  <div class="container">
+    {{ partial "section-header.html" (dict "title" (i18n "shortsTitle") "subtitle" (i18n "shortsSubtitle") "href" $href "icon" "iconoir-chat-bubble" "color" $color) }}
+    <div class="columns is-multiline">
+      {{ range $shorts }}
+        <div class="column is-12-mobile is-6-tablet is-4-desktop">
+          {{ partial "short.html" . }}
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{/* ---------- Nieuws ---------- */}}
+{{ $posts := where site.RegularPages "Section" "posts" }}
+{{ if gt (len $posts) 0 }}
+{{ $href := "" }}{{ with site.GetPage "/posts" }}{{ $href = .RelPermalink }}{{ end }}
+{{ $color := "link" }}
+<section class="section home-section" style="--accent-h:var(--bulma-{{ $color }}-h);--accent-s:var(--bulma-{{ $color }}-s);--accent-l:var(--bulma-{{ $color }}-l)">
+  <div class="container">
+    {{ partial "section-header.html" (dict "title" (i18n "newsTitle") "subtitle" (i18n "newsSubtitle") "href" $href "icon" "iconoir-megaphone" "color" $color) }}
+    {{ range $posts }}
+      {{ partial "row-card.html" . }}
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{/* ---------- Projecten ---------- */}}
+{{ $projects := where site.RegularPages "Section" "projects" }}
+{{ if gt (len $projects) 0 }}
+{{ $href := "" }}{{ with site.GetPage "/projects" }}{{ $href = .RelPermalink }}{{ end }}
+{{ $color := "danger" }}
+<section class="section home-section" style="--accent-h:var(--bulma-{{ $color }}-h);--accent-s:var(--bulma-{{ $color }}-s);--accent-l:var(--bulma-{{ $color }}-l)">
+  <div class="container">
+    {{ partial "section-header.html" (dict "title" (i18n "projectsTitle") "subtitle" (i18n "projectsSubtitle") "href" $href "icon" "iconoir-light-bulb" "color" $color) }}
+    <div class="columns is-multiline">
+      {{ range $projects }}
+        <div class="column is-12-mobile is-6-tablet is-4-desktop">
+          {{ partial "card.html" . }}
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ end }}

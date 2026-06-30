@@ -1,0 +1,105 @@
+{{- /*
+Renders SEO metadata for the current page: description, canonical URL,
+generator, hreflang alternates, RSS link, Open Graph and Twitter Card tags.
+
+Configurable site params:
+  params.description  Fallback meta description for pages without one.
+  params.image        Fallback social-share image (path or URL).
+  params.twitter      Twitter @handle for twitter:site.
+
+@example: {{ partial "seo.html" . }}
+*/ -}}
+
+{{- $description := "" }}
+{{- with .Description }}
+  {{- $description = . }}
+{{- else }}
+  {{- with .Summary }}
+    {{- $description = . | plainify | htmlUnescape | chomp }}
+  {{- else }}
+    {{- $description = site.Params.description }}
+  {{- end }}
+{{- end }}
+{{- with $description }}
+<meta name="description" content="{{ . | truncate 160 }}">
+{{- end }}
+
+<link rel="canonical" href="{{ .Permalink }}">
+{{ hugo.Generator }}
+
+{{- /* hreflang alternates for every translation, including this page. */}}
+{{- range .AllTranslations }}
+<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+{{- end }}
+
+{{- with .OutputFormats.Get "rss" }}
+<link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
+{{- end }}
+
+{{- $title := cond .IsHome site.Title .Title }}
+
+{{- /* Resolve a social-share image: page-resource image, page param, or site param.
+       Resource images also expose intrinsic dimensions so social cards render
+       without a fetch-measure round-trip. */}}
+{{- $ogImage := "" }}
+{{- $ogImageW := "" }}
+{{- $ogImageH := "" }}
+{{- with .Resources.GetMatch "*.{jpg,jpeg,png,webp}" }}
+  {{- $ogImage = .Permalink }}
+  {{- $ogImageW = .Width }}
+  {{- $ogImageH = .Height }}
+{{- else }}
+  {{- with .Params.image }}
+    {{- $ogImage = . | absURL }}
+  {{- else }}
+    {{- with site.Params.image }}
+      {{- $ogImage = . | absURL }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:type" content="{{ cond .IsPage `article` `website` }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="{{ replace site.Language.Lang `-` `_` }}">
+{{- range .Translations }}
+<meta property="og:locale:alternate" content="{{ replace .Language.Lang `-` `_` }}">
+{{- end }}
+{{- with $description }}
+<meta property="og:description" content="{{ . | truncate 200 }}">
+{{- end }}
+{{- with $ogImage }}
+<meta property="og:image" content="{{ . }}">
+{{- end }}
+{{- with $ogImageW }}
+<meta property="og:image:width" content="{{ . }}">
+{{- end }}
+{{- with $ogImageH }}
+<meta property="og:image:height" content="{{ . }}">
+{{- end }}
+
+<meta name="twitter:card" content="{{ cond (ne $ogImage `` ) `summary_large_image` `summary` }}">
+<meta name="twitter:title" content="{{ $title }}">
+{{- with $description }}
+<meta name="twitter:description" content="{{ . | truncate 200 }}">
+{{- end }}
+{{- with $ogImage }}
+<meta name="twitter:image" content="{{ . }}">
+{{- end }}
+{{- with site.Params.twitter }}
+<meta name="twitter:site" content="{{ . }}">
+{{- end }}
+
+{{- /* JSON-LD structured data: Article for single pages, WebSite otherwise. */}}
+{{- $ld := dict "@context" "https://schema.org" }}
+{{- if .IsPage }}
+  {{- $ld = merge $ld (dict "@type" "Article" "headline" .Title "url" .Permalink "datePublished" (.Date.Format "2006-01-02") "dateModified" (.Lastmod.Format "2006-01-02")) }}
+  {{- with $description }}{{ $ld = merge $ld (dict "description" .) }}{{ end }}
+  {{- with $ogImage }}{{ $ld = merge $ld (dict "image" .) }}{{ end }}
+  {{- with site.Params.author }}{{ with .name }}{{ $ld = merge $ld (dict "author" (dict "@type" "Person" "name" .)) }}{{ end }}{{ end }}
+{{- else }}
+  {{- $ld = merge $ld (dict "@type" "WebSite" "name" site.Title "url" site.Home.Permalink "inLanguage" site.Language.Lang) }}
+  {{- with $description }}{{ $ld = merge $ld (dict "description" .) }}{{ end }}
+{{- end }}
+<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>

@@ -1,0 +1,18 @@
+# Diploma's & certificaten. `name`/`issuer` zijn meestal eigennamen en dus taalneutraal.
+# `url` is optioneel (maakt de naam een link); `date` is een vrije tekst (bv. jaartal).
+
+[[certificates]]
+  name   = "Certified Kubernetes Administrator (CKA)"
+  issuer = "The Linux Foundation"
+  date   = "2023"
+  url    = "https://example.org/cert/cka"
+
+[[certificates]]
+  name   = "Oracle Certified Professional, Java SE"
+  issuer = "Oracle"
+  date   = "2019"
+
+[[certificates]]
+  name   = "Bachelor Informatica (diploma)"
+  issuer = "Hogeschool Voorbeeld"
+  date   = "2017"

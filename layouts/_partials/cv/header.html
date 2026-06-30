@@ -1,0 +1,58 @@
+{{- /*
+CV header: photo, name, job title, location and contact details + a row of profile
+links and a "download as PDF" (print) button. Replaces the generic page-head on the CV
+page. Reads per-language front matter (so cv.md / cv.en.md / cv.fr.md can each set a
+localized jobTitle/location) with a fallback to the site author params:
+
+  [params]
+    name      = "..."          # falls back to site author name, then site Title
+    jobTitle  = "..."
+    location  = "..."
+    email     = "..."
+    phone     = "..."
+    photo     = "/avatar.png"  # URL; falls back to site author avatar
+    [params.links]
+      linkedin = "https://..."
+      github   = "https://..."
+      website  = "https://..."
+
+The print button is wired through main.js (`[data-print]` → window.print()); it and the
+links are hidden in print via main.css.
+
+@context {page} . (the CV page)
+*/ -}}
+{{- $name := .Params.name | default site.Params.author.name | default site.Title -}}
+{{- $photo := .Params.photo | default site.Params.author.avatar -}}
+{{- $links := .Params.links -}}
+<header class="cv-header">
+  {{- with $photo }}
+  <figure class="cv-photo image">
+    <img src="{{ . }}" alt="{{ $name }}" loading="lazy">
+  </figure>
+  {{- end }}
+  <div class="cv-header-body">
+    <h1 class="title is-2 mb-1">{{ $name }}</h1>
+    {{- with .Params.jobTitle }}<p class="subtitle is-4 mb-3">{{ . }}</p>{{ end }}
+    <div class="cv-contact">
+      {{- with .Params.location }}
+      <span class="icon-text"><span class="icon"><i class="iconoir-map-pin"></i></span><span>{{ . }}</span></span>
+      {{- end }}
+      {{- with .Params.email }}
+      <a class="icon-text" href="mailto:{{ . }}"><span class="icon"><i class="iconoir-mail"></i></span><span>{{ . }}</span></a>
+      {{- end }}
+      {{- with .Params.phone }}
+      <a class="icon-text" href="tel:{{ replaceRE `[^0-9+]` `` . }}"><span class="icon"><i class="iconoir-phone"></i></span><span>{{ . }}</span></a>
+      {{- end }}
+    </div>
+    <div class="cv-header-actions buttons mt-3">
+      {{- with $links }}
+      {{- with .linkedin }}<a class="button is-small" href="{{ . }}" rel="me noopener" target="_blank"><span class="icon"><i class="iconoir-linkedin"></i></span><span>LinkedIn</span></a>{{ end }}
+      {{- with .github }}<a class="button is-small" href="{{ . }}" rel="me noopener" target="_blank"><span class="icon"><i class="iconoir-github"></i></span><span>GitHub</span></a>{{ end }}
+      {{- with .website }}<a class="button is-small" href="{{ . }}" rel="me noopener" target="_blank"><span class="icon"><i class="iconoir-globe"></i></span><span>{{ i18n "cvWebsite" }}</span></a>{{ end }}
+      {{- end }}
+      <button class="button is-small is-link is-light cv-print-button" data-print type="button">
+        <span class="icon"><i class="iconoir-printing-page"></i></span><span>{{ i18n "cvDownloadPdf" }}</span>
+      </button>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,25 @@
+{{- /*
+Renders the shared card metadata line: publication date, reading time and tags.
+Used by card.html and row-card.html so they stay in sync.
+
+@context {page} The page whose metadata to render.
+
+@example: {{ partial "card-meta.html" . }}
+*/ -}}
+<div class="content is-small">
+  <span class="icon-text">
+    <span class="icon"><i class="iconoir-calendar"></i></span>
+    <span>{{ .Date | time.Format ":date_medium" }}</span>
+  </span>
+  <span class="icon-text">
+    <span class="icon"><i class="iconoir-clock"></i></span>
+    <span>{{ i18n "readingTime" . }}</span>
+  </span>
+</div>
+{{- with .GetTerms "tags" }}
+<div class="tags">
+  {{- range . }}
+  <span class="tag is-primary is-light">{{ .LinkTitle }}</span>
+  {{- end }}
+</div>
+{{- end }}

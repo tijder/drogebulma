@@ -1,0 +1,14 @@
+{{- /*
+Clean teaser for overview cards: the page Description when set, otherwise a plain-text,
+truncated fallback derived from the auto-summary. Plainifying keeps rich shortcode/embed
+HTML (game embeds, trophy cards, images) out of the overview, so cards stay compact.
+
+@context {page} .
+
+@example: {{ partial "card-summary.html" . }}
+*/ -}}
+{{- with .Description }}
+<p>{{ . }}</p>
+{{- else }}
+<p>{{ .Summary | plainify | strings.TrimSpace | truncate 240 }}</p>
+{{- end }}

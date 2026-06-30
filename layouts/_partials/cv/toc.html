@@ -1,0 +1,21 @@
+{{- /*
+Sidebar "table of contents" for the CV page. The CV section headings are rendered from
+data (not markdown), so they don't appear in Hugo's native `.TableOfContents`; this
+partial builds the equivalent submenu by hand. Each entry is shown only when its data
+file exists — matching the blocks `cv/page.html` actually renders (and their `id`s).
+Rendered by `baseof.html` in the same `aside.menu` as the normal page TOC.
+
+@context {page} . (the CV page; used only for site/i18n context)
+
+@example: {{ partial "cv/toc.html" . }}
+*/ -}}
+{{- $cv := hugo.Data.cv -}}
+<p class="menu-label">{{ i18n "tableOfContents" }}</p>
+<ul class="menu-list">
+  {{- with .Content }}<li><a href="#cv-profile">{{ i18n "cvProfile" }}</a></li>{{ end }}
+  {{- with $cv.skills }}<li><a href="#cv-skills">{{ i18n "cvSkills" }}</a></li>{{ end }}
+  {{- with $cv.languages }}<li><a href="#cv-languages">{{ i18n "cvLanguages" }}</a></li>{{ end }}
+  {{- with $cv.experience }}<li><a href="#cv-experience">{{ i18n "cvExperience" }}</a></li>{{ end }}
+  {{- with $cv.education }}<li><a href="#cv-education">{{ i18n "cvEducation" }}</a></li>{{ end }}
+  {{- with $cv.certificates }}<li><a href="#cv-certificates">{{ i18n "cvCertificates" }}</a></li>{{ end }}
+</ul>

@@ -1,0 +1,69 @@
+{{- /*
+Renders a route stats line — distance, elevation gain, duration — computed in
+Hugo from the GPX track points. Each value is dropped when it cannot be derived
+(e.g. no <ele> or <time> in the track). Mirrors the icon-text style of
+card-meta.html.
+
+@context {slice}  pts  Normalised trkpt maps (keys "-lat","-lon","ele","time").
+@context {float}  pi   math.Pi, passed in to avoid recomputing.
+
+@example: {{ partial "route/stats.html" (dict "pts" $pts "pi" math.Pi) }}
+*/ -}}
+{{- $pts := .pts -}}
+{{- $pi := .pi -}}
+{{- $n := len $pts -}}
+{{- /* Distance: haversine sum over consecutive points (km). */ -}}
+{{- $dist := 0.0 -}}
+{{- $gain := 0.0 -}}
+{{- $rad := div $pi 180.0 -}}
+{{- range $i := seq 1 (sub $n 1) -}}
+  {{- $a := index $pts (sub $i 1) -}}
+  {{- $b := index $pts $i -}}
+  {{- $la1 := mul (index $a "-lat" | float) $rad -}}
+  {{- $la2 := mul (index $b "-lat" | float) $rad -}}
+  {{- $dla := sub $la2 $la1 -}}
+  {{- $dlo := mul (sub (index $b "-lon" | float) (index $a "-lon" | float)) $rad -}}
+  {{- $sla := math.Sin (div $dla 2.0) -}}
+  {{- $slo := math.Sin (div $dlo 2.0) -}}
+  {{- $h := add (mul $sla $sla) (mul (mul (math.Cos $la1) (math.Cos $la2)) (mul $slo $slo)) -}}
+  {{- $dist = add $dist (mul 12742.0 (math.Asin (math.Sqrt $h))) -}}
+  {{- /* Elevation: sum of positive deltas. */ -}}
+  {{- with index $a "ele" -}}
+    {{- with index $b "ele" -}}
+      {{- $de := sub (. | float) (index $a "ele" | float) -}}
+      {{- if gt $de 0.0 }}{{ $gain = add $gain $de }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- /* Duration: last <time> − first <time>. */ -}}
+{{- $dur := "" -}}
+{{- $t0 := index $pts 0 -}}
+{{- $tn := index $pts (sub $n 1) -}}
+{{- with index $t0 "time" -}}
+  {{- with index $tn "time" -}}
+    {{- $secs := sub (index $tn "time" | time.AsTime).Unix (index $t0 "time" | time.AsTime).Unix -}}
+    {{- if gt $secs 0 -}}
+      {{- $hh := math.Floor (div (float $secs) 3600.0) -}}
+      {{- $mm := math.Floor (div (float (mod $secs 3600)) 60.0) -}}
+      {{- $dur = printf "%d:%02d" (int $hh) (int $mm) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+<div class="content is-small route-stats">
+  <span class="icon-text" title="{{ i18n "routeDistance" }}">
+    <span class="icon"><i class="iconoir-path-arrow"></i></span>
+    <span>{{ printf "%.1f" $dist }} km</span>
+  </span>
+  {{- if gt $gain 0.0 }}
+  <span class="icon-text" title="{{ i18n "routeElevation" }}">
+    <span class="icon"><i class="iconoir-triangle-flag"></i></span>
+    <span>{{ printf "%.0f" $gain }} m</span>
+  </span>
+  {{- end }}
+  {{- with $dur }}
+  <span class="icon-text" title="{{ i18n "routeDuration" }}">
+    <span class="icon"><i class="iconoir-clock"></i></span>
+    <span>{{ . }} u</span>
+  </span>
+  {{- end }}
+</div>

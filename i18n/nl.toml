@@ -1,0 +1,231 @@
+# Nederlandse UI-strings voor het DrogeBulma-thema.
+
+[tableOfContents]
+other = "Inhoudsopgave"
+
+[shortsTitle]
+other = "Berichten"
+
+[shortsSubtitle]
+other = "Korte berichten en gedachten."
+
+[newsTitle]
+other = "Nieuws"
+
+[newsSubtitle]
+other = "Het laatste nieuws en de updates."
+
+[projectsTitle]
+other = "Projecten"
+
+[projectsSubtitle]
+other = "Een selectie van projecten waar ik aan werk."
+
+[readMore]
+other = "Lees meer"
+
+[readingTime]
+other = "{{ .ReadingTime }} min leestijd"
+
+[previous]
+other = "Vorige"
+
+[next]
+other = "Volgende"
+
+[pagination]
+other = "Paginering"
+
+[languages]
+other = "Talen"
+
+[allRightsReserved]
+other = "Alle rechten voorbehouden."
+
+[skipToContent]
+other = "Naar de inhoud"
+
+[mainNavigation]
+other = "Hoofdnavigatie"
+
+# --- Menu labels (matched to [[menus.main]] identifiers) ---
+[menu_shorts]
+other = "Shorts"
+
+[menu_news]
+other = "Nieuws"
+
+[menu_projects]
+other = "Projecten"
+
+[menu_trophies]
+other = "Trofeeën"
+
+[menu_cv]
+other = "CV"
+
+[notFoundTitle]
+other = "Pagina niet gevonden"
+
+[notFoundText]
+other = "Sorry, deze pagina bestaat niet (meer)."
+
+[backHome]
+other = "Terug naar de homepage"
+
+# --- Trophies ---
+[trophies]
+other = "Trofeeën"
+
+[trophiesSubtitle]
+other = "Behaalde trophies en achievements."
+
+[earned]
+other = "Behaald"
+
+[locked]
+other = "Vergrendeld"
+
+[completion]
+other = "Voltooid"
+
+[totalEarned]
+other = "Behaald"
+
+[trophyGames]
+other = "Games"
+
+[sourcesCompleted]
+other = "100% voltooid"
+
+[averageProgress]
+other = "Gem. voortgang"
+
+[byPlatform]
+other = "Per platform"
+
+[byType]
+other = "Per type"
+
+[rarityOfPlayers]
+other = "{{ . }}% van de spelers"
+
+[platform_steam]
+other = "Steam"
+
+[platform_psn]
+other = "PlayStation"
+
+[trophyType_platinum]
+other = "Platina"
+
+[trophyType_gold]
+other = "Goud"
+
+[trophyType_silver]
+other = "Zilver"
+
+[trophyType_bronze]
+other = "Brons"
+
+[trophyType_achievement]
+other = "Prestatie"
+
+[recentlyEarned]
+other = "Laatst behaald"
+
+[recentlyCompleted]
+other = "Laatst 100%"
+
+[mentionedIn]
+other = "Genoemd in"
+
+[relatedGames]
+other = "Gerelateerde games"
+
+[gallery]
+other = "Galerij"
+
+[relatedShorts]
+other = "Shorts"
+
+# --- Routekaart (GPX) ---
+[routeMap]
+other = "Routekaart"
+
+[routeDistance]
+other = "Afstand"
+
+[routeElevation]
+other = "Hoogtewinst"
+
+[routeDuration]
+other = "Duur"
+
+[mapAttribution]
+other = "Kaartdata © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>-bijdragers"
+
+# --- Lightbox (afbeelding/kaart vergroten) ---
+[enlargeImage]
+other = "Vergroten"
+
+[closeImage]
+other = "Sluiten"
+
+# --- CV (vaardigheden, werkervaring, opleidingen, certificaten) ---
+[cvSkills]
+other = "Vaardigheden"
+
+[cvExperience]
+other = "Werkervaring"
+
+[cvEducation]
+other = "Opleidingen"
+
+[cvCourses]
+other = "Cursussen"
+
+[cvCertificates]
+other = "Diploma's & certificaten"
+
+[cvPresent]
+other = "heden"
+
+[skillLevel_beginner]
+other = "Beginner"
+
+[skillLevel_intermediate]
+other = "Gevorderd"
+
+[skillLevel_advanced]
+other = "Vergevorderd"
+
+[skillLevel_expert]
+other = "Expert"
+
+[cvProfile]
+other = "Profiel"
+
+[cvLanguages]
+other = "Talenkennis"
+
+[cvWebsite]
+other = "Website"
+
+[cvDownloadPdf]
+other = "Download als pdf"
+
+[langLevel_native]
+other = "Moedertaal"
+
+[langLevel_fluent]
+other = "Vloeiend"
+
+[langLevel_advanced]
+other = "Goed"
+
+[langLevel_intermediate]
+other = "Redelijk"
+
+[langLevel_basic]
+other = "Basis"

@@ -1,0 +1,26 @@
+{{- /*
+Resolves a localized field from the trophies data to a single string for the given
+language. The export wraps title/name/description as a map of language code → string
+(e.g. {"en": "...", "nl": "...", "de": "..."}); this picks the best match.
+
+Fallback order: requested language → English → Dutch → German → first available value.
+Backwards compatible: a plain string (old single-language export) passes through
+unchanged, and a missing/empty value yields "".
+
+@context {any}    value  The field — a language map, or a plain string.
+@context {string} lang   The desired language code (usually site.Language.Lang).
+@returns {string}
+
+@example: {{ partial "trophy/loc.html" (dict "value" $t.name "lang" site.Language.Lang) }}
+*/ -}}
+{{- $m := .value }}
+{{- $out := "" }}
+{{- if reflect.IsMap $m }}
+  {{- range $l := (slice .lang "en" "nl" "de") }}
+    {{- if and (not $out) (index $m $l) }}{{ $out = index $m $l }}{{ end }}
+  {{- end }}
+  {{- if not $out }}{{ range $m }}{{ if not $out }}{{ $out = . }}{{ end }}{{ end }}{{ end }}
+{{- else }}
+  {{- $out = or $m "" }}
+{{- end }}
+{{- return $out }}

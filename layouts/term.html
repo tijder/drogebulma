@@ -1,0 +1,12 @@
+{{ define "main" }}
+<section class="section">
+    <div class="container">
+      {{ partial "page-head.html" (dict "title" .Title "subtitle" .Content "page" .) }}
+      <div class="content">
+        {{ range .Pages }}
+          {{ partial "row-card.html" . }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+{{ end }}

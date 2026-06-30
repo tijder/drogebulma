@@ -1,0 +1,37 @@
+# Opleidingen (`studies`) en cursussen (`courses`). Studies gebruiken taalmaps voor
+# `degree`/`institution` en een periode (`start`/`end`, "YYYY-MM"). Cursussen zijn
+# lichter: taalneutrale `name`, `provider` en optioneel `year`.
+
+[[studies]]
+  start = "2013-09"
+  end   = "2017-06"
+  [studies.degree]
+    nl = "Bachelor Informatica"
+    en = "BSc Computer Science"
+    fr = "Licence en informatique"
+  [studies.institution]
+    nl = "Hogeschool Voorbeeld"
+    en = "Example University of Applied Sciences"
+    fr = "Haute école Exemple"
+
+[[studies]]
+  start = "2010-09"
+  end   = "2013-06"
+  [studies.degree]
+    nl = "Havo, profiel Natuur & Techniek"
+    en = "Secondary education, Science & Technology"
+    fr = "Baccalauréat, filière sciences & technologie"
+  [studies.institution]
+    nl = "Voorbeeld College"
+    en = "Example College"
+    fr = "Collège Exemple"
+
+[[courses]]
+  name     = "Certified Kubernetes Administrator (training)"
+  provider = "Cloud Academy"
+  year     = "2023"
+
+[[courses]]
+  name     = "Clean Code"
+  provider = "Online Learning"
+  year     = "2020"

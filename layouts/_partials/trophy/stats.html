@@ -1,0 +1,63 @@
+{{- /*
+Renders a statistics dashboard aggregated from the generated trophies game pages
+(their params), so it never touches the raw 6 MB data again.
+
+@example: {{ partial "trophy/stats.html" . }}
+*/ -}}
+{{- $games := where site.RegularPages "Section" "trophies" }}
+{{- $earned := 0 }}{{ $total := 0 }}
+{{- /* Source-level aggregates: count + sum of per-source completion percentages,
+       so "100% completed" and "average progress" are measured per platform source. */}}
+{{- $sourceCount := 0 }}{{ $sourcesDone := 0 }}{{ $pctSum := 0 }}
+{{- range $games }}
+  {{- $earned = add $earned (.Params.earned | default 0) }}
+  {{- $total = add $total (.Params.total | default 0) }}
+  {{- range .Params.sources }}
+    {{- $sourceCount = add $sourceCount 1 }}
+    {{- $pctSum = add $pctSum (.pct | default 0) }}
+    {{- if ge (.pct | default 0) 100 }}{{ $sourcesDone = add $sourcesDone 1 }}{{ end }}
+  {{- end }}
+{{- end }}
+{{- $avgPct := 0 }}{{ if gt $sourceCount 0 }}{{ $avgPct = int (math.Round (math.Div $pctSum $sourceCount)) }}{{ end }}
+
+<nav class="level trophy-stats box">
+  <div class="level-item has-text-centered">
+    <div><p class="heading">{{ i18n "trophyGames" }}</p><p class="title">{{ len $games }}</p></div>
+  </div>
+  <div class="level-item has-text-centered">
+    <div><p class="heading">{{ i18n "totalEarned" }}</p><p class="title">{{ $earned }}<span class="is-size-5 has-text-grey">/{{ $total }}</span></p></div>
+  </div>
+  <div class="level-item has-text-centered">
+    <div><p class="heading">{{ i18n "sourcesCompleted" }}</p><p class="title">{{ $sourcesDone }}<span class="is-size-5 has-text-grey">/{{ $sourceCount }}</span></p></div>
+  </div>
+  <div class="level-item has-text-centered">
+    <div><p class="heading">{{ i18n "averageProgress" }}</p><p class="title">{{ $avgPct }}%</p></div>
+  </div>
+</nav>
+
+<div class="columns">
+  <div class="column">
+    <p class="heading">{{ i18n "byPlatform" }}</p>
+    <div class="tags">
+      {{- range $pf := slice "steam" "psn" }}
+        {{- $pe := 0 }}{{ $pt := 0 }}
+        {{- range $games }}{{ $pe = add $pe (index .Params.platformEarned $pf | default 0) }}{{ $pt = add $pt (index .Params.platformTotal $pf | default 0) }}{{ end }}
+        {{- if gt $pt 0 }}
+        <span class="tag is-medium trophy-platform-{{ $pf }}">{{ i18n (printf "platform_%s" $pf) | default $pf }}: {{ $pe }}/{{ $pt }}</span>
+        {{- end }}
+      {{- end }}
+    </div>
+  </div>
+  <div class="column">
+    <p class="heading">{{ i18n "byType" }}</p>
+    <div class="tags">
+      {{- range $ty := slice "platinum" "gold" "silver" "bronze" "achievement" }}
+        {{- $te := 0 }}{{ $tt := 0 }}
+        {{- range $games }}{{ $te = add $te (index .Params.typeEarned $ty | default 0) }}{{ $tt = add $tt (index .Params.typeTotal $ty | default 0) }}{{ end }}
+        {{- if gt $tt 0 }}
+        <span class="tag is-medium trophy-{{ $ty }}">{{ i18n (printf "trophyType_%s" $ty) | default $ty }}: {{ $te }}/{{ $tt }}</span>
+        {{- end }}
+      {{- end }}
+    </div>
+  </div>
+</div>

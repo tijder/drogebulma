@@ -1,0 +1,231 @@
+# Chaînes d'interface en français pour le thème DrogeBulma.
+
+[tableOfContents]
+other = "Table des matières"
+
+[shortsTitle]
+other = "Billets"
+
+[shortsSubtitle]
+other = "Courts billets et réflexions."
+
+[newsTitle]
+other = "Actualités"
+
+[newsSubtitle]
+other = "Les dernières actualités et mises à jour."
+
+[projectsTitle]
+other = "Projets"
+
+[projectsSubtitle]
+other = "Une sélection de projets sur lesquels je travaille."
+
+[readMore]
+other = "Lire la suite"
+
+[readingTime]
+other = "{{ .ReadingTime }} min de lecture"
+
+[previous]
+other = "Précédent"
+
+[next]
+other = "Suivant"
+
+[pagination]
+other = "Pagination"
+
+[languages]
+other = "Langues"
+
+[allRightsReserved]
+other = "Tous droits réservés."
+
+[skipToContent]
+other = "Aller au contenu"
+
+[mainNavigation]
+other = "Navigation principale"
+
+# --- Menu labels (matched to [[menus.main]] identifiers) ---
+[menu_shorts]
+other = "Billets"
+
+[menu_news]
+other = "Actualités"
+
+[menu_projects]
+other = "Projets"
+
+[menu_trophies]
+other = "Trophées"
+
+[menu_cv]
+other = "CV"
+
+[notFoundTitle]
+other = "Page introuvable"
+
+[notFoundText]
+other = "Désolé, cette page n'existe pas (ou plus)."
+
+[backHome]
+other = "Retour à l'accueil"
+
+# --- Trophies ---
+[trophies]
+other = "Trophées"
+
+[trophiesSubtitle]
+other = "Trophées et succès débloqués."
+
+[earned]
+other = "Débloqué"
+
+[locked]
+other = "Verrouillé"
+
+[completion]
+other = "Progression"
+
+[totalEarned]
+other = "Débloqués"
+
+[trophyGames]
+other = "Jeux"
+
+[sourcesCompleted]
+other = "Complétés à 100 %"
+
+[averageProgress]
+other = "Progression moy."
+
+[byPlatform]
+other = "Par plateforme"
+
+[byType]
+other = "Par type"
+
+[rarityOfPlayers]
+other = "{{ . }} % des joueurs"
+
+[platform_steam]
+other = "Steam"
+
+[platform_psn]
+other = "PlayStation"
+
+[trophyType_platinum]
+other = "Platine"
+
+[trophyType_gold]
+other = "Or"
+
+[trophyType_silver]
+other = "Argent"
+
+[trophyType_bronze]
+other = "Bronze"
+
+[trophyType_achievement]
+other = "Succès"
+
+[recentlyEarned]
+other = "Récemment débloqués"
+
+[recentlyCompleted]
+other = "Récemment à 100 %"
+
+[mentionedIn]
+other = "Mentionné dans"
+
+[relatedGames]
+other = "Jeux associés"
+
+[gallery]
+other = "Galerie"
+
+[relatedShorts]
+other = "Billets"
+
+# --- Carte d'itinéraire (GPX) ---
+[routeMap]
+other = "Carte d'itinéraire"
+
+[routeDistance]
+other = "Distance"
+
+[routeElevation]
+other = "Dénivelé positif"
+
+[routeDuration]
+other = "Durée"
+
+[mapAttribution]
+other = "Données cartographiques © les contributeurs d'<a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>"
+
+# --- Lightbox (agrandir l'image / la carte) ---
+[enlargeImage]
+other = "Agrandir"
+
+[closeImage]
+other = "Fermer"
+
+# --- CV (compétences, expérience, formations, certificats) ---
+[cvSkills]
+other = "Compétences"
+
+[cvExperience]
+other = "Expérience professionnelle"
+
+[cvEducation]
+other = "Formations"
+
+[cvCourses]
+other = "Cours"
+
+[cvCertificates]
+other = "Diplômes & certificats"
+
+[cvPresent]
+other = "présent"
+
+[skillLevel_beginner]
+other = "Débutant"
+
+[skillLevel_intermediate]
+other = "Intermédiaire"
+
+[skillLevel_advanced]
+other = "Avancé"
+
+[skillLevel_expert]
+other = "Expert"
+
+[cvProfile]
+other = "Profil"
+
+[cvLanguages]
+other = "Langues"
+
+[cvWebsite]
+other = "Site web"
+
+[cvDownloadPdf]
+other = "Télécharger en PDF"
+
+[langLevel_native]
+other = "Langue maternelle"
+
+[langLevel_fluent]
+other = "Courant"
+
+[langLevel_advanced]
+other = "Bon"
+
+[langLevel_intermediate]
+other = "Intermédiaire"
+
+[langLevel_basic]
+other = "Notions"

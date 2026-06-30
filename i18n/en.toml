@@ -1,0 +1,231 @@
+# English UI strings for the DrogeBulma theme.
+
+[tableOfContents]
+other = "Table of contents"
+
+[shortsTitle]
+other = "Posts"
+
+[shortsSubtitle]
+other = "Short posts and thoughts."
+
+[newsTitle]
+other = "News"
+
+[newsSubtitle]
+other = "The latest news and updates."
+
+[projectsTitle]
+other = "Projects"
+
+[projectsSubtitle]
+other = "A selection of projects I'm working on."
+
+[readMore]
+other = "Read more"
+
+[readingTime]
+other = "{{ .ReadingTime }} min read"
+
+[previous]
+other = "Previous"
+
+[next]
+other = "Next"
+
+[pagination]
+other = "Pagination"
+
+[languages]
+other = "Languages"
+
+[allRightsReserved]
+other = "All rights reserved."
+
+[skipToContent]
+other = "Skip to content"
+
+[mainNavigation]
+other = "Main navigation"
+
+# --- Menu labels (matched to [[menus.main]] identifiers) ---
+[menu_shorts]
+other = "Shorts"
+
+[menu_news]
+other = "News"
+
+[menu_projects]
+other = "Projects"
+
+[menu_trophies]
+other = "Trophies"
+
+[menu_cv]
+other = "CV"
+
+[notFoundTitle]
+other = "Page not found"
+
+[notFoundText]
+other = "Sorry, this page does not exist (anymore)."
+
+[backHome]
+other = "Back to the homepage"
+
+# --- Trophies ---
+[trophies]
+other = "Trophies"
+
+[trophiesSubtitle]
+other = "Earned trophies and achievements."
+
+[earned]
+other = "Earned"
+
+[locked]
+other = "Locked"
+
+[completion]
+other = "Completion"
+
+[totalEarned]
+other = "Earned"
+
+[trophyGames]
+other = "Games"
+
+[sourcesCompleted]
+other = "Completed 100%"
+
+[averageProgress]
+other = "Avg. progress"
+
+[byPlatform]
+other = "By platform"
+
+[byType]
+other = "By type"
+
+[rarityOfPlayers]
+other = "{{ . }}% of players"
+
+[platform_steam]
+other = "Steam"
+
+[platform_psn]
+other = "PlayStation"
+
+[trophyType_platinum]
+other = "Platinum"
+
+[trophyType_gold]
+other = "Gold"
+
+[trophyType_silver]
+other = "Silver"
+
+[trophyType_bronze]
+other = "Bronze"
+
+[trophyType_achievement]
+other = "Achievement"
+
+[recentlyEarned]
+other = "Recently earned"
+
+[recentlyCompleted]
+other = "Recently 100%"
+
+[mentionedIn]
+other = "Mentioned in"
+
+[relatedGames]
+other = "Related games"
+
+[gallery]
+other = "Gallery"
+
+[relatedShorts]
+other = "Shorts"
+
+# --- Route map (GPX) ---
+[routeMap]
+other = "Route map"
+
+[routeDistance]
+other = "Distance"
+
+[routeElevation]
+other = "Elevation gain"
+
+[routeDuration]
+other = "Duration"
+
+[mapAttribution]
+other = "Map data © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
+
+# --- Lightbox (enlarge image/map) ---
+[enlargeImage]
+other = "Enlarge"
+
+[closeImage]
+other = "Close"
+
+# --- CV (skills, experience, education, certificates) ---
+[cvSkills]
+other = "Skills"
+
+[cvExperience]
+other = "Work experience"
+
+[cvEducation]
+other = "Education"
+
+[cvCourses]
+other = "Courses"
+
+[cvCertificates]
+other = "Diplomas & certificates"
+
+[cvPresent]
+other = "present"
+
+[skillLevel_beginner]
+other = "Beginner"
+
+[skillLevel_intermediate]
+other = "Intermediate"
+
+[skillLevel_advanced]
+other = "Advanced"
+
+[skillLevel_expert]
+other = "Expert"
+
+[cvProfile]
+other = "Profile"
+
+[cvLanguages]
+other = "Languages"
+
+[cvWebsite]
+other = "Website"
+
+[cvDownloadPdf]
+other = "Download as PDF"
+
+[langLevel_native]
+other = "Native"
+
+[langLevel_fluent]
+other = "Fluent"
+
+[langLevel_advanced]
+other = "Advanced"
+
+[langLevel_intermediate]
+other = "Intermediate"
+
+[langLevel_basic]
+other = "Basic"

@@ -1,0 +1,17 @@
+{{- /*
+Markdown image render hook: makes body images zoomable via the no-JS lightbox.
+
+Renders the standard lazy <img> (resolving bundle resources for intrinsic
+width/height to avoid layout shift) and wraps it in `lightbox.html` so a click
+enlarges it to a full-viewport overlay. The wrapper id is the image ordinal,
+which is unique within the page.
+*/ -}}
+{{- $alt := .PlainText | default .Title -}}
+{{- $dest := .Destination -}}
+{{- $img := "" -}}
+{{- with .Page.Resources.GetMatch $dest -}}
+  {{- $img = printf `<img src=%q alt=%q width=%q height=%q loading="lazy" decoding="async">` .RelPermalink $alt (string .Width) (string .Height) -}}
+{{- else -}}
+  {{- $img = printf `<img src=%q alt=%q loading="lazy" decoding="async">` $dest $alt -}}
+{{- end -}}
+{{- partial "lightbox.html" (dict "id" (printf "lb-%d" .Ordinal) "inner" $img "label" $alt) -}}

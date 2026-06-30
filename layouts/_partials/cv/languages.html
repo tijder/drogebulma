@@ -1,0 +1,24 @@
+{{- /*
+Renders spoken-language proficiency from data/cv/languages.toml. Each `languages` entry
+has a localized `name` (language map, resolved via trophy/loc.html) and a `level` key
+(native|fluent|advanced|intermediate|basic) → a Bulma tag colour + i18n label
+`langLevel_<level>`. Same name+level tag layout as the skills partial.
+
+@context {map}    data  hugo.Data.cv.languages (expects `.languages`)
+@context {string} lang  current language (site.Language.Lang)
+
+@example: {{ partial "cv/languages.html" (dict "data" $cv.languages "lang" site.Language.Lang) }}
+*/ -}}
+{{- $lang := .lang -}}
+{{- $colors := dict "native" "is-success" "fluent" "is-link" "advanced" "is-info" "intermediate" "is-warning" "basic" "is-light" -}}
+{{- with .data.languages }}
+<div class="cv-skill-list">
+  {{- range . }}
+  {{- $color := index $colors .level | default "is-light" }}
+  <div class="tags has-addons cv-skill">
+    <span class="tag is-medium">{{ partial "trophy/loc.html" (dict "value" .name "lang" $lang) }}</span>
+    <span class="tag is-medium {{ $color }}">{{ i18n (printf "langLevel_%s" .level) }}</span>
+  </div>
+  {{- end }}
+</div>
+{{- end }}

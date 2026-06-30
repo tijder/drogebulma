@@ -1,0 +1,14 @@
+{{- /*
+Renders a coloured badge for a trophy type (platinum/gold/silver/bronze) or a
+generic badge for Steam "achievement".
+
+@context {string} type
+
+@example: {{ partial "trophy/type-badge.html" (dict "type" "platinum") }}
+*/ -}}
+{{- $type := .type }}
+{{- $icon := cond (eq $type "achievement") "medal" "trophy" }}
+<span class="tag trophy-badge trophy-{{ $type }}">
+  <span class="icon is-small"><i class="iconoir-{{ $icon }}"></i></span>
+  <span>{{ i18n (printf "trophyType_%s" $type) | default $type }}</span>
+</span>

@@ -1,0 +1,32 @@
+{{- /*
+Renders "Gerelateerde games" badges for a content page that tags one or more games in
+its `games` front-matter array (matchKeys). Each badge links to the trophies game
+page. Renders nothing when the page tags no games (or none resolve to a trophies
+page).
+
+Trophies pages are generated per content language. Each badge links to the game page
+in the current page's language; if a translation is missing it falls back to the
+default-language site (`index hugo.Sites 0`), so links resolve from any article.
+
+@context {page} Any content page (reads .Params.games).
+
+@example: {{ partial "trophy/related-games.html" . }}
+*/ -}}
+{{- with .Params.games }}
+{{- $games := slice }}
+{{- range . }}
+  {{- $ref := printf "/trophies/%s" (anchorize .) }}
+  {{- $gp := or (site.GetPage $ref) ((index hugo.Sites 0).GetPage $ref) }}
+  {{- with $gp }}{{ $games = $games | append . }}{{ end }}
+{{- end }}
+{{- with $games }}
+<div class="related-games page-terms">
+  <div class="page-terms-label">{{ i18n "relatedGames" }}:</div>
+  <div class="tags">
+    {{- range . }}
+    <a class="button is-primary is-light" href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{- end }}
+  </div>
+</div>
+{{- end }}
+{{- end }}

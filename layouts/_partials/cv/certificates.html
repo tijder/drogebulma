@@ -1,0 +1,28 @@
+{{- /*
+Renders diplomas/certificates from data/cv/certificates.toml. Each `certificates`
+entry has a plain `name`, optional `issuer`, optional `date` and optional `url`
+(when set, the name becomes a link). Names/issuers are usually proper nouns, so they
+are plain strings (not language maps).
+
+@context {map}    data  hugo.Data.cv.certificates (expects `.certificates`)
+@context {string} lang  current language (unused for now; kept for symmetry)
+
+@example: {{ partial "cv/certificates.html" (dict "data" $cv.certificates "lang" site.Language.Lang) }}
+*/ -}}
+{{- with .data.certificates }}
+<ul class="cv-certificates">
+  {{- range . }}
+  <li class="cv-cert">
+    <span class="icon-text">
+      <span class="icon has-text-warning"><i class="iconoir-medal"></i></span>
+      <span>
+        {{- if .url }}<a href="{{ .url }}" class="has-text-weight-semibold">{{ .name }}</a>
+        {{- else }}<span class="has-text-weight-semibold">{{ .name }}</span>{{ end }}
+        {{- with .issuer }} <span class="has-text-grey">&mdash; {{ . }}</span>{{ end }}
+        {{- with .date }} <span class="has-text-grey is-size-7">({{ . }})</span>{{ end }}
+      </span>
+    </span>
+  </li>
+  {{- end }}
+</ul>
+{{- end }}

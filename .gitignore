@@ -1,0 +1,8 @@
+# Hugo build output / caches
+/public/
+/exampleSite/public/
+**/resources/_gen/
+.hugo_build.lock
+
+# Node (only if a consuming site installs deps here)
+node_modules/

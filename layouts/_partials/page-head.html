@@ -1,0 +1,25 @@
+{{- /*
+Centred page header in the bulma.io "expo" / "Made with Bulma" style: a bold
+title, a short accent-coloured divider, and an optional subtitle. Used by every
+list/single/term template so page headers look consistent across the theme.
+
+@context {string}        title    Heading text (already translated).
+@context {string/HTML}   subtitle Optional intro (plain string or rendered .Content).
+@context {page}          page     Optional; used to colour the divider with the
+                                  page's nav accent (e.g. projects → danger/red).
+@context {string}        color    Optional; explicit Bulma colour for the divider,
+                                  overriding the page lookup.
+
+@example: {{ partial "page-head.html" (dict "title" .Title "subtitle" .Content "page" .) }}
+*/ -}}
+{{- $color := .color }}
+{{- if and (not $color) .page }}
+  {{- $color = partial "menu-color.html" (dict "page" .page) }}
+{{- end }}
+<div class="page-head has-text-centered mb-6">
+  <h1 class="title is-2">{{ .title }}</h1>
+  <span class="page-head-divider"{{ with $color }} style="background:var(--bulma-{{ . }})"{{ end }}></span>
+  {{- with .subtitle }}
+  <div class="subtitle is-5 has-text-grey">{{ . }}</div>
+  {{- end }}
+</div>

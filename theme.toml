@@ -1,0 +1,11 @@
+name = "DrogeBulma"
+license = "GPLv3"
+description = "Een meertalig Hugo-thema op basis van Bulma en Iconoir, met responsive afbeeldingen en SEO-metadata."
+homepage = "https://github.com/tijder/drogebulma"
+min_version = "0.158.0"
+tags = ["bulma", "blog", "multilingual", "responsive", "seo", "dutch"]
+features = ["multilingual", "i18n", "responsive-images", "seo", "toc"]
+
+[author]
+name = "tijder"
+homepage = "https://github.com/tijder"

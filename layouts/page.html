@@ -1,0 +1,38 @@
+{{ define "main" }}
+  <section class="section">
+    {{ partial "page-head.html" (dict "title" .Title "page" .) }}
+    <p class="is-size-7 has-text-centered has-text-grey mb-5">
+      {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+      <time datetime="{{ $dateMachine }}">{{ .Date | time.Format ":date_long" }}</time>
+      &middot; {{ i18n "readingTime" . }}
+    </p>
+
+    <div class="content">
+      {{- if or (.Resources.GetMatch "*.{jpg,jpeg,png,webp}") .Params.image }}
+      {{- $cover := partial "page-image.html" (dict "page" . "fill" "1200x500" "sizes" "(max-width: 1023px) 100vw, 66vw") }}
+      <figure class="image">
+        {{ partial "lightbox.html" (dict "id" "lb-cover" "inner" $cover "class" "lightbox-block" "label" .Title) }}
+      </figure>
+      {{- end }}
+
+      {{ .Content }}
+      {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+      {{ partial "trophy/related-games.html" . }}
+    </div>
+
+    {{- if or .PrevInSection .NextInSection }}
+    <nav class="level" aria-label="{{ i18n "pagination" }}">
+      <div class="level-left">
+        {{- with .PrevInSection }}
+        <a class="level-item" href="{{ .RelPermalink }}" rel="prev">&larr; {{ .LinkTitle }}</a>
+        {{- end }}
+      </div>
+      <div class="level-right">
+        {{- with .NextInSection }}
+        <a class="level-item" href="{{ .RelPermalink }}" rel="next">{{ .LinkTitle }} &rarr;</a>
+        {{- end }}
+      </div>
+    </nav>
+    {{- end }}
+  </section>
+{{ end }}

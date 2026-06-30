@@ -1,0 +1,36 @@
+{{- /*
+Renders education from data/cv/education.toml: a `studies` list (formal education) and
+a `courses` list. Studies use localized `degree`/`institution` language maps and a
+`start`/`end` ("YYYY-MM") period; courses are lighter — plain `name`, `provider` and
+optional `year`.
+
+@context {map}    data  hugo.Data.cv.education (expects `.studies` and/or `.courses`)
+@context {string} lang  current language (site.Language.Lang)
+
+@example: {{ partial "cv/education.html" (dict "data" $cv.education "lang" site.Language.Lang) }}
+*/ -}}
+{{- $lang := .lang -}}
+{{- with .data.studies }}
+<div class="cv-timeline">
+  {{- range . }}
+  <div class="cv-entry">
+    <h3 class="title is-5 mb-1">{{ partial "trophy/loc.html" (dict "value" .degree "lang" $lang) }}</h3>
+    <p class="cv-entry-meta">
+      <span class="has-text-weight-semibold">{{ partial "trophy/loc.html" (dict "value" .institution "lang" $lang) }}</span>
+      <span class="has-text-grey"> &middot; {{ partial "cv/period.html" (dict "start" .start "end" .end) }}</span>
+    </p>
+  </div>
+  {{- end }}
+</div>
+{{- end }}
+{{- with .data.courses }}
+<h3 class="title is-5 cv-subhead">{{ i18n "cvCourses" }}</h3>
+<ul class="cv-courses">
+  {{- range . }}
+  <li>
+    <span class="has-text-weight-semibold">{{ .name }}</span>
+    <span class="has-text-grey">&mdash; {{ .provider }}{{ with .year }} ({{ . }}){{ end }}</span>
+  </li>
+  {{- end }}
+</ul>
+{{- end }}

@@ -1,0 +1,33 @@
+# Werkervaring. `company` en de periode (`start`/`end`, "YYYY-MM") zijn taalneutraal;
+# `role`, `summary` en `highlights` zijn taalmaps. Een lege/ontbrekende `end` toont
+# het i18n-label "heden". `highlights` is een taalmap van lijsten.
+
+[[jobs]]
+  company = "Voorbeeld BV"
+  start   = "2021-03"
+  end     = ""
+  [jobs.role]
+    nl = "Senior Software Engineer"
+    en = "Senior Software Engineer"
+    fr = "Ingénieur logiciel senior"
+  [jobs.summary]
+    nl = "Leidde de bouw van een microservices-platform en begeleidde een team van vier engineers."
+    en = "Led the build-out of a microservices platform and mentored a team of four engineers."
+    fr = "A dirigé la construction d'une plateforme de microservices et encadré une équipe de quatre ingénieurs."
+  [jobs.highlights]
+    nl = ["CI/CD-pijplijn opgezet met GitHub Actions", "Doorlooptijd van releases met 60% verkort"]
+    en = ["Set up a CI/CD pipeline with GitHub Actions", "Cut release lead time by 60%"]
+    fr = ["Mise en place d'un pipeline CI/CD avec GitHub Actions", "Réduction du délai de livraison de 60%"]
+
+[[jobs]]
+  company = "Demo Solutions"
+  start   = "2017-09"
+  end     = "2021-02"
+  [jobs.role]
+    nl = "Software Engineer"
+    en = "Software Engineer"
+    fr = "Ingénieur logiciel"
+  [jobs.summary]
+    nl = "Ontwikkelde web-applicaties in Java en JavaScript voor diverse klanten."
+    en = "Built web applications in Java and JavaScript for a range of clients."
+    fr = "A développé des applications web en Java et JavaScript pour divers clients."

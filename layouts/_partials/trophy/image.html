@@ -1,0 +1,31 @@
+{{- /*
+Resolves a trophy/game image local-first, with a remote URL fallback.
+
+Tries a local resource under `params.trophies.imageBase` (default "trophies"):
+  - trophy icon: <base>/<platform>/<id>/trophies/<basename(iconUrl)>
+  - game art:    <base>/<platform>/<id>/<kind>.jpg   (e.g. kind=header)
+If the local resource is missing, falls back to `remote`. Renders nothing when
+neither is available (callers handle that, e.g. a title-banner fallback).
+
+@context {string} platform  Source platform ("steam"|"psn").
+@context {string} id        Source id (steam appid / psn NPWR id).
+@context {string} iconUrl    Trophy icon URL — its basename locates the local file.
+@context {string} kind       Art kind ("header") when rendering game art instead.
+@context {string} remote     Remote URL used as fallback.
+@context {string} alt        Alt text.
+@context {string} class      Optional extra class.
+*/ -}}
+{{- $base := (site.Params.trophies).imageBase | default "trophies" }}
+{{- $w := 64 }}{{ $h := 64 }}{{ $class := .class }}
+{{- $path := "" }}
+{{- if .iconUrl }}
+  {{- $path = printf "%s/%s/%s/trophies/%s" $base .platform .id (path.Base .iconUrl) }}
+{{- else }}
+  {{- $path = printf "%s/%s/%s/%s.jpg" $base .platform .id .kind }}
+  {{- $w = 460 }}{{ $h = 215 }}
+{{- end }}
+{{- $src := "" }}
+{{- with resources.Get $path }}{{ $src = .RelPermalink }}{{ else }}{{ $src = .remote }}{{ end }}
+{{- with $src }}
+<img src="{{ . }}" alt="{{ $.alt }}" loading="lazy" decoding="async" width="{{ $w }}" height="{{ $h }}"{{ with $class }} class="{{ . }}"{{ end }}>
+{{- end }}

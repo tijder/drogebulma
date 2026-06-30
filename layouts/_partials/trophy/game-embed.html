@@ -1,0 +1,44 @@
+{{- /*
+Compact, inline embed of a trophies game — used by the {{< game >}} shortcode to drop
+a small clickable game card into article prose. Shows header art (or a title-banner
+fallback), platform tags, the best source's progress bar, and links to the game page.
+
+The root is a <div class="box"> (a block element, so Goldmark renders it as an HTML
+block rather than wrapping it in <p>) and the whole box is clickable via the
+stretched-link pattern — never an <a> as the root, which the HTML parser mangles when
+it lands inside a paragraph.
+
+@context {page} A generated trophies game page.
+
+@example: {{ partial "trophy/game-embed.html" $gamePage }}
+*/ -}}
+{{- $p := . }}
+{{- $pct := $p.Params.bestPct | default 0 }}
+{{- $color := "is-danger" }}
+{{- if ge $pct 100 }}{{ $color = "is-success" }}{{ else if ge $pct 50 }}{{ $color = "is-warning" }}{{ end }}
+<div class="box trophy-embed">
+  <article class="media">
+    <figure class="media-left trophy-embed-media">
+      {{- with $p.Params.header }}
+      {{ partial "trophy/image.html" (dict "platform" $p.Params.headerPlatform "id" $p.Params.headerId "kind" "header" "remote" . "alt" $p.Title "class" "trophy-art") }}
+      {{- else }}
+      <div class="trophy-header-fallback">
+        <span class="title is-6 has-text-white">{{ $p.Title }}</span>
+      </div>
+      {{- end }}
+      <span class="tag trophy-embed-pct {{ $color }}">{{ $pct }}%</span>
+    </figure>
+    <div class="media-content">
+      <p class="title is-6 mb-2"><a class="stretched-link" href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></p>
+      <div class="tags mb-2">
+        {{- range $p.Params.platforms }}
+        <span class="tag is-dark trophy-platform-{{ . }}">
+          <span class="icon is-small"><i class="iconoir-{{ if eq . "psn" }}playstation-gamepad{{ else }}gamepad{{ end }}"></i></span>
+          <span>{{ i18n (printf "platform_%s" .) | default . }}</span>
+        </span>
+        {{- end }}
+      </div>
+      {{ partial "trophy/progress.html" (dict "earned" $p.Params.bestEarned "total" $p.Params.bestTotal) }}
+    </div>
+  </article>
+</div>

@@ -1,0 +1,73 @@
+{{- /*
+"Gallery" (Galerij): gathers every page-resource across the site whose resource-level
+`params.game` matches this game's matchKey — both **images** (screenshots) and **videos**
+(clips) — and renders them together in one gallery on the game page, each linking back to
+the article that hosts it. Renders nothing when there are no tagged media.
+
+Tag a resource in an article's front matter, e.g.:
+  [[resources]]
+    src = "boss-fight.jpg"          # image → thumbnail linking to the article
+    [resources.params]
+      game = "shadow realm"
+  [[resources]]
+    src = "boss-kill.mp4"           # video → inline player
+    [resources.params]
+      game = "shadow realm"
+      poster = "boss-kill.jpg"      # optional still shown before playback
+
+@context {page} A generated trophies game page (needs .Params.matchKey).
+
+@example: {{ partial "trophy/gallery.html" . }}
+*/ -}}
+{{- $key := .Params.matchKey }}
+{{- $items := slice }}
+{{- range site.RegularPages }}
+  {{- $page := . }}
+  {{- range .Resources.ByType "image" }}
+    {{- if eq (.Params.game | default "") $key }}
+    {{- $items = $items | append (dict "kind" "image" "res" . "page" $page) }}
+    {{- end }}
+  {{- end }}
+  {{- range .Resources.ByType "video" }}
+    {{- if eq (.Params.game | default "") $key }}
+    {{- $item := dict "kind" "video" "res" . "page" $page }}
+    {{- with .Params.poster }}{{ with $page.Resources.GetMatch . }}{{ $item = merge $item (dict "poster" .RelPermalink) }}{{ end }}{{ end }}
+    {{- $items = $items | append $item }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- with $items }}
+<div class="box trophy-gallery mt-5">
+  <h2 class="title is-5">
+    <span class="icon-text">
+      <span class="icon"><i class="iconoir-media-image"></i></span>
+      <span>{{ i18n "gallery" }}</span>
+    </span>
+  </h2>
+  <div class="columns is-multiline">
+    {{- range . }}
+    {{- $r := .res }}
+    <div class="column is-one-third">
+      {{- if eq .kind "video" }}
+      <figure class="video-embed">
+        <video controls preload="metadata" playsinline{{ with .poster }} poster="{{ . }}"{{ end }}>
+          <source src="{{ $r.RelPermalink }}" type="{{ with $r.MediaType.Type }}{{ . }}{{ else }}video/mp4{{ end }}">
+        </video>
+      </figure>
+      {{- else }}
+      {{- $thumb := $r.Fill "960x540 Center webp" }}
+      {{- $alt := or $r.Title $.Title }}
+      {{- $img := printf `<img src=%q alt=%q width=%q height=%q loading="lazy" decoding="async">` $thumb.RelPermalink $alt (string $thumb.Width) (string $thumb.Height) }}
+      <figure class="image">
+        {{ partial "lightbox.html" (dict "id" (printf "lb-gallery-%s" (anchorize $r.RelPermalink)) "inner" $img "class" "lightbox-block" "label" $alt) }}
+      </figure>
+      {{- end }}
+      <p class="is-size-7 has-text-grey mt-1">
+        {{- with $r.Title }}{{ . }} &mdash; {{ end -}}
+        <a href="{{ .page.RelPermalink }}">{{ .page.LinkTitle }}</a>
+      </p>
+    </div>
+    {{- end }}
+  </div>
+</div>
+{{- end }}

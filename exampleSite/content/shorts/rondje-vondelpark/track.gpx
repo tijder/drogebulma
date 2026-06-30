@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="DrogeBulma demo" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Rondje Vondelpark</name>
+    <trkseg>
+      <trkpt lat="52.3585" lon="4.8650"><ele>1.5</ele><time>2026-06-28T07:30:00Z</time></trkpt>
+      <trkpt lat="52.3600" lon="4.8680"><ele>2.0</ele><time>2026-06-28T07:34:00Z</time></trkpt>
+      <trkpt lat="52.3592" lon="4.8718"><ele>2.5</ele><time>2026-06-28T07:38:00Z</time></trkpt>
+      <trkpt lat="52.3568" lon="4.8742"><ele>3.0</ele><time>2026-06-28T07:43:00Z</time></trkpt>
+      <trkpt lat="52.3548" lon="4.8721"><ele>2.0</ele><time>2026-06-28T07:48:00Z</time></trkpt>
+      <trkpt lat="52.3546" lon="4.8678"><ele>1.5</ele><time>2026-06-28T07:53:00Z</time></trkpt>
+      <trkpt lat="52.3565" lon="4.8652"><ele>1.5</ele><time>2026-06-28T07:57:00Z</time></trkpt>
+      <trkpt lat="52.3585" lon="4.8650"><ele>1.5</ele><time>2026-06-28T08:01:00Z</time></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

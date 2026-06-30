@@ -1,0 +1,47 @@
+<nav class="navbar main-navbar has-shadow" role="navigation" aria-label="{{ i18n "mainNavigation" }}">
+  <div class="navbar-brand">
+    <a class="navbar-item navbar-brand-item" href="{{ relLangURL "" }}">
+      <span class="icon-text">
+        <span class="icon has-text-primary">
+          <i class="iconoir-home"></i>
+        </span>
+        <span class="has-text-weight-bold">{{ site.Title }}</span>
+      </span>
+    </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasic">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+  </div>
+
+
+  <div id="navbarBasic" class="navbar-menu">
+
+    {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
+
+    {{- if .IsTranslated }}
+    <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable lang-switcher">
+          <a class="navbar-link" aria-label="{{ i18n "languages" }}">
+            <span class="icon-text">
+              <span class="icon has-text-grey"><i class="iconoir-globe"></i></span>
+              <span class="lang-current">{{ site.Language.Label }}</span>
+            </span>
+          </a>
+
+          <div class="navbar-dropdown is-right">
+            {{- range .AllTranslations }}
+            {{- $isActive := eq .Language.Lang site.Language.Lang }}
+            <a class="navbar-item lang-option{{ if $isActive }} is-active{{ end }}" href="{{ .RelPermalink }}" hreflang="{{ .Language.Lang }}" lang="{{ .Language.Lang }}"{{ if $isActive }} aria-current="true"{{ end }}>
+              <span class="lang-name">{{ .Language.Label }}</span>
+              <span class="icon lang-check">{{ if $isActive }}<i class="iconoir-check"></i>{{ end }}</span>
+            </a>
+            {{- end }}
+          </div>
+        </div>
+    </div>
+    {{- end }}
+  </div>
+</nav>

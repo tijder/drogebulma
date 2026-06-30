@@ -1,0 +1,33 @@
+{{- /*
+Renders categorized skills from data/cv/skills.toml.
+
+Each category has a localized `title` (language map) and a list of `skills`; each
+skill has a `name` (plain) and a `level` key (beginner|intermediate|advanced|expert).
+The level resolves to a Bulma tag colour and an i18n label (`skillLevel_<level>`).
+Localized titles go through the shared `trophy/loc.html` resolver.
+
+@context {map}    data  hugo.Data.cv.skills (expects `.categories`)
+@context {string} lang  current language (site.Language.Lang)
+
+@example: {{ partial "cv/skills.html" (dict "data" $cv.skills "lang" site.Language.Lang) }}
+*/ -}}
+{{- $lang := .lang -}}
+{{- $colors := dict "beginner" "is-light" "intermediate" "is-info" "advanced" "is-link" "expert" "is-success" -}}
+{{- with .data.categories }}
+<div class="cv-skills">
+  {{- range . }}
+  <div class="cv-skill-group">
+    <h3 class="title is-5 cv-subhead">{{ partial "trophy/loc.html" (dict "value" .title "lang" $lang) }}</h3>
+    <div class="cv-skill-list">
+      {{- range .skills }}
+      {{- $color := index $colors .level | default "is-light" }}
+      <div class="tags has-addons cv-skill">
+        <span class="tag is-medium">{{ .name }}</span>
+        <span class="tag is-medium {{ $color }}">{{ i18n (printf "skillLevel_%s" .level) }}</span>
+      </div>
+      {{- end }}
+    </div>
+  </div>
+  {{- end }}
+</div>
+{{- end }}

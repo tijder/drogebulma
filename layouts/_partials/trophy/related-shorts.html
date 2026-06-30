@@ -1,0 +1,42 @@
+{{- /*
+"Shorts": gathers the shorts that reference this game — either by tagging it in their
+`games` front-matter array (matched on matchKey) OR by mentioning it inline with a
+{{< game >}} / {{< trophy >}} shortcode or a manual link (detected because the rendered
+content then contains this game's permalink). Unlike the "Genoemd in" backlinks
+(posts/projects, shown as compact teasers), shorts are self-contained micro-posts, so
+each is rendered in full via `short.html` — its own section, like the screenshots
+gallery. Renders nothing when no short references the game.
+
+@context {page} A generated trophies game page (needs .Params.matchKey).
+
+@example: {{ partial "trophy/related-shorts.html" . }}
+*/ -}}
+{{- $self := . }}
+{{- $fm := where site.RegularPages "Params.games" "intersect" (slice .Params.matchKey) }}
+{{- $shorts := slice }}
+{{- range site.RegularPages }}
+  {{- if eq .Section "shorts" }}
+  {{- if or (in $fm .) (strings.Contains .Content $self.RelPermalink) }}
+  {{- $shorts = $shorts | append . }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- with $shorts }}
+{{- /* No outer `box`: shorts render as self-contained `.card`s via short.html, so
+       wrapping them in a box would nest a card inside a card. Just a heading + grid. */}}
+<div class="trophy-mentions mt-6">
+  <h2 class="title is-5">
+    <span class="icon-text">
+      <span class="icon"><i class="iconoir-chat-bubble"></i></span>
+      <span>{{ i18n "relatedShorts" }}</span>
+    </span>
+  </h2>
+  <div class="shorts-masonry">
+    {{- range . }}
+    <div class="shorts-masonry-item">
+      {{ partial "short.html" . }}
+    </div>
+    {{- end }}
+  </div>
+</div>
+{{- end }}

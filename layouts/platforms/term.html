@@ -1,0 +1,8 @@
+{{ define "main" }}
+<section class="section">
+  <div class="container">
+    {{ partial "page-head.html" (dict "title" (i18n (printf "platform_%s" .Data.Term) | default .Title) "color" "warning") }}
+    {{ partial "trophy/game-grid.html" (dict "pages" .Pages) }}
+  </div>
+</section>
+{{ end }}

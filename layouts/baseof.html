@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Lang }}" dir="{{ or site.Language.Direction `ltr` }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <a class="is-sr-only" href="#main-content">{{ i18n "skipToContent" }}</a>
+  <header>
+    {{ partial "header.html" . }}
+  </header>
+  {{- $hasToc := .Fragments.Headings }}
+  {{/* The CV page builds its section submenu by hand (its headings come from data,
+       not markdown, so they aren't in .TableOfContents). */}}
+  {{- $cvNav := eq .Type "cv" }}
+  {{- $showAside := or $hasToc $cvNav }}
+  <section class="main-content columns is-fullheight">
+    {{- if $showAside }}
+    {{/* Inhoudsopgave – alleen tonen als de pagina koppen heeft (of de CV-sectienav). */}}
+    <aside class="menu column is-2 is-narrow-mobile section">
+      {{- if $cvNav }}
+      {{ partial "cv/toc.html" . }}
+      {{- else }}
+      <p class="menu-label">{{ i18n "tableOfContents" }}</p>
+      {{/* Bulma's menu-component stuurt de styling via .menu-list op de bovenste
+           <ul>; Hugo's .TableOfContents zet daar geen class op. Injecteer 'm op
+           alleen de eerste <ul> (limit 1) — geneste lijsten blijven kale <ul>,
+           wat de Bulma-regel .menu-list li ul verwacht. Niet her-wrappen. */}}
+      {{ replaceRE "<ul>" `<ul class="menu-list">` (string $.TableOfContents) 1 | safeHTML }}
+      {{- end }}
+    </aside>
+    {{- end }}
+    {{- $mainClass := cond $showAside "is-8" "is-8 is-offset-2" }}
+    {{- if .IsHome }}{{ $mainClass = cond $hasToc "is-10" "is-12" }}{{ end }}
+    <main id="main-content" class="column {{ $mainClass }}">
+      {{ block "main" . }}{{ end }}
+    </main>
+  </section>
+  <footer>
+    {{ partial "footer.html" . }}
+  </footer>
+</body>
+</html>

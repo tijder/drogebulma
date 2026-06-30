@@ -1,0 +1,11 @@
+{{ define "main" }}
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title is-1">404</h1>
+    <span class="page-head-divider"></span>
+    <h2 class="subtitle">{{ i18n "notFoundTitle" }}</h2>
+    <p class="block">{{ i18n "notFoundText" }}</p>
+    <a class="button is-primary" href="{{ relLangURL "" }}">{{ i18n "backHome" }}</a>
+  </div>
+</section>
+{{ end }}

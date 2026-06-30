@@ -1,0 +1,76 @@
+# Bouwt de exampleSite met het DrogeBulma-thema en publiceert deze op GitHub Pages.
+name: Deploy exampleSite to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Handmatig draaien vanuit het Actions-tabblad.
+  workflow_dispatch:
+
+# Rechten die GitHub Pages-deployment nodig heeft.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Eén deployment tegelijk; lopende runs niet afbreken.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # min_version van het thema is 0.158.0; extended is nodig voor de assetpijplijn.
+      HUGO_VERSION: 0.162.1
+    steps:
+      - name: Install Hugo CLI (extended)
+        run: |
+          wget -O /tmp/hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i /tmp/hugo.deb
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Het exampleSite/themes/drogebulma is een symlink naar de repo-root;
+          # submodules zijn niet nodig, maar volledige history helpt .GitInfo/.Lastmod.
+          fetch-depth: 0
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Hugo
+        env:
+          HUGO_ENVIRONMENT: production
+          TZ: Europe/Amsterdam
+        # baseURL komt van de Pages-config (juiste subpad voor een project-site,
+        # of het custom domein wanneer er één is ingesteld).
+        run: |
+          hugo \
+            --source exampleSite \
+            --minify \
+            --gc \
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: exampleSite/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

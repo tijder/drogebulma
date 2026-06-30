@@ -1,0 +1,43 @@
+{{- /*
+Renders a responsive, lazy-loaded <img> for a page.
+
+When the page has a bundled image resource it is processed with Hugo's image
+pipeline (cropped to `fill`, converted to WebP, with a 1x/2x srcset and intrinsic
+width/height to avoid layout shift). Otherwise it falls back to the `image`
+front-matter value (treated as a plain URL). Renders nothing when neither exists.
+
+@context {page}   page   The page whose image to render.
+@context {string} fill   Crop size as "WIDTHxHEIGHT" (default "600x400").
+@context {string} sizes  The `sizes` attribute (default mobile-first card sizing).
+@context {string} class  Optional class added to the <img>.
+
+@example: {{ partial "page-image.html" (dict "page" . "fill" "600x400") }}
+*/ -}}
+
+{{- $page := .page }}
+{{- $fill := .fill | default "600x400" }}
+{{- $sizes := .sizes | default "(max-width: 768px) 100vw, (max-width: 1023px) 50vw, 33vw" }}
+{{- $class := .class }}
+{{- $alt := $page.Title }}
+
+{{- with $page.Resources.GetMatch "*.{jpg,jpeg,png,webp}" }}
+  {{- $parts := split $fill "x" }}
+  {{- $w := int (index $parts 0) }}
+  {{- $h := int (index $parts 1) }}
+  {{- $x1 := .Fill (printf "%dx%d webp" $w $h) }}
+  {{- $x2 := .Fill (printf "%dx%d webp" (mul $w 2) (mul $h 2)) }}
+  <img
+    src="{{ $x1.RelPermalink }}"
+    srcset="{{ $x1.RelPermalink }} {{ $w }}w, {{ $x2.RelPermalink }} {{ mul $w 2 }}w"
+    sizes="{{ $sizes }}"
+    width="{{ $x1.Width }}"
+    height="{{ $x1.Height }}"
+    alt="{{ $alt }}"
+    loading="lazy"
+    decoding="async"
+    {{- with $class }} class="{{ . }}"{{ end }}>
+{{- else }}
+  {{- with $page.Params.image }}
+  <img src="{{ . }}" alt="{{ $alt }}" loading="lazy" decoding="async"{{ with $class }} class="{{ . }}"{{ end }}>
+  {{- end }}
+{{- end }}

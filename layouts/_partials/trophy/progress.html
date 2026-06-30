@@ -1,0 +1,18 @@
+{{- /*
+Renders a Bulma progress bar from earned/total counts, coloured by completion.
+
+@context {int} earned
+@context {int} total
+
+@example: {{ partial "trophy/progress.html" (dict "earned" 5 "total" 7) }}
+*/ -}}
+{{- $earned := .earned | default 0 }}
+{{- $total := .total | default 0 }}
+{{- $pct := 0 }}
+{{- if gt $total 0 }}{{ $pct = int (math.Round (math.Div (math.Mul $earned 100.0) $total)) }}{{ end }}
+{{- $color := "is-danger" }}
+{{- if ge $pct 100 }}{{ $color = "is-success" }}{{ else if ge $pct 50 }}{{ $color = "is-warning" }}{{ end }}
+<div class="trophy-progress">
+  <progress class="progress {{ $color }}" value="{{ $earned }}" max="{{ $total }}">{{ $pct }}%</progress>
+  <p class="is-size-7 has-text-grey">{{ $earned }}/{{ $total }} &middot; {{ $pct }}%</p>
+</div>

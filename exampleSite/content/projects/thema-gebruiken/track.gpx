@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="DrogeBulma demo" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Rondje Amsterdam</name>
+    <trkseg>
+      <trkpt lat="52.3676" lon="4.9041"><ele>2.0</ele><time>2026-05-01T08:00:00Z</time></trkpt>
+      <trkpt lat="52.3702" lon="4.8952"><ele>3.0</ele><time>2026-05-01T08:05:00Z</time></trkpt>
+      <trkpt lat="52.3731" lon="4.8936"><ele>2.5</ele><time>2026-05-01T08:11:00Z</time></trkpt>
+      <trkpt lat="52.3760" lon="4.9000"><ele>4.0</ele><time>2026-05-01T08:18:00Z</time></trkpt>
+      <trkpt lat="52.3745" lon="4.9100"><ele>5.0</ele><time>2026-05-01T08:25:00Z</time></trkpt>
+      <trkpt lat="52.3700" lon="4.9150"><ele>3.5</ele><time>2026-05-01T08:32:00Z</time></trkpt>
+      <trkpt lat="52.3665" lon="4.9120"><ele>2.0</ele><time>2026-05-01T08:39:00Z</time></trkpt>
+      <trkpt lat="52.3650" lon="4.9041"><ele>2.0</ele><time>2026-05-01T08:46:00Z</time></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

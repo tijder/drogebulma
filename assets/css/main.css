@@ -1,0 +1,982 @@
+/* Custom theme styling. Loaded after Bulma/Iconoir so rules here win. */
+
+/* ---------- Skip-to-content link ---------- */
+
+/* The skip link is visually hidden (.is-sr-only) until a keyboard user Tabs to
+   it, then it reveals as a focusable button at the top-left — without this a
+   sighted keyboard user can never see or use it. */
+a.is-sr-only:focus {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  clip: auto;
+  clip-path: none;
+  overflow: visible;
+  white-space: normal;
+  background: var(--bulma-scheme-main, #fff);
+  color: var(--bulma-text, currentColor);
+  border-radius: var(--bulma-radius, 4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Main navbar (bulma.io-style: light bar, coloured icons) ---------- */
+
+/* A light navbar whose items each carry their section's accent colour (set
+   per entry via --item-accent in menu.html). The coloured icon shows on every
+   item; on desktop hover/active also paints a matching accent underline. */
+.main-navbar {
+  border-bottom: 1px solid var(--bulma-border-weak, #ededed);
+}
+.main-navbar .navbar-brand-item .icon-text { gap: 0.5rem; }
+
+/* The app-shell columns sit flush against the viewport (no wrapping .container),
+   so cancel Bulma's default negative side margins — otherwise the column gutter
+   pushes ~12px of content past the right edge and causes a horizontal scrollbar
+   on small screens. The inter-column gutter is still provided by column padding. */
+.main-content.columns {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Coloured accent underline on the active/hovered item (desktop only — on
+   mobile the menu is a stacked dropdown where a bottom border reads as a
+   divider, so we keep just the icon colour + tint there). */
+@media screen and (min-width: 1024px) {
+  .main-navbar .navbar-item.has-accent {
+    border-bottom: 3px solid transparent;
+  }
+  .main-navbar .navbar-item.has-accent:hover,
+  .main-navbar .navbar-item.has-accent.is-active,
+  .main-navbar .navbar-item.has-accent.has-dropdown:focus-within {
+    border-bottom-color: var(--item-accent, var(--bulma-primary));
+    background-color: color-mix(in srgb, var(--item-accent, var(--bulma-primary)) 8%, transparent);
+  }
+}
+.main-navbar .navbar-item.has-accent.is-active {
+  color: var(--item-accent, var(--bulma-primary));
+  font-weight: var(--bulma-weight-semibold, 600);
+}
+/* Keep the accent line clear of the dropdown panel on hoverable parents. */
+.main-navbar .navbar-item.has-dropdown.has-accent .navbar-link { border-bottom: 0; }
+
+/* ---------- Language switcher ---------- */
+
+/* The trigger shows a globe + the current language; the dropdown is a tidy
+   menu where the active language gets a soft tint and a check (instead of
+   Bulma's default solid-blue active bar). */
+.lang-switcher .navbar-link {
+  font-weight: var(--bulma-weight-medium, 500);
+}
+.lang-switcher .navbar-dropdown {
+  min-width: 12rem;
+  padding: 0.4rem;
+  border-radius: var(--bulma-radius-large, 8px);
+  border-top: 0;
+  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.12);
+}
+.lang-switcher .lang-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--bulma-radius, 6px);
+  color: var(--bulma-text, #4a4a4a);
+}
+.lang-switcher .lang-option:hover {
+  background-color: var(--bulma-background, #f5f5f5);
+  color: var(--bulma-text-strong, #363636);
+}
+/* Override Bulma's bright-blue active item with a soft accent tint. */
+.lang-switcher .lang-option.is-active,
+.lang-switcher .lang-option.is-active:hover {
+  background-color: color-mix(in srgb, var(--bulma-link, #485fc7) 12%, transparent);
+  color: var(--bulma-link, #485fc7);
+  font-weight: var(--bulma-weight-semibold, 600);
+}
+.lang-switcher .lang-check {
+  color: var(--bulma-link, #485fc7);
+}
+
+/* Make the whole card clickable while keeping the accessible link text on the
+   title only (the "stretched link" pattern). Tags/meta stay as plain text. */
+.card {
+  position: relative;
+}
+
+.card a.stretched-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* ---------- Article meta blocks (Tags / related games) ---------- */
+
+/* The "Tags:" and "Gerelateerde games:" blocks under an article. Give each block its
+   own top margin so they sit apart from the content and from each other (Bulma's
+   `.tags:last-child { margin-bottom: -0.5rem }` otherwise pulls the next block tight),
+   and a small gap between each label and its row of pills. */
+.page-terms { margin-top: 1.5rem; }
+.page-terms-label { margin-bottom: 0.5rem; }
+
+/* ---------- Shorts overview (masonry) ---------- */
+
+/* Shorts vary wildly in height (plain text vs. game embeds + trophy lists), so a
+   rigid row-aligned grid leaves big gaps. A CSS multi-column layout packs the cards
+   tightly like a board, with no empty rows. Columns scale with Bulma's breakpoints. */
+.shorts-masonry {
+  column-count: 1;
+  column-gap: 1.5rem;
+}
+
+@media screen and (min-width: 1216px) {
+  .shorts-masonry { column-count: 2; }
+}
+
+/* Only go to 3 columns on very wide screens — at normal desktop widths the main
+   column is too narrow for 3 cards to read comfortably. */
+@media screen and (min-width: 1800px) {
+  .shorts-masonry { column-count: 3; }
+}
+
+/* `display: inline-block` makes each card an ATOMIC item the multi-column
+   balancer can't fragment or stretch internally. Without it the balancer
+   injects vertical space inside some cards (e.g. between a short's name and
+   @handle) to equalise column heights — and which card it hits shifts with the
+   column count, so the gap looks random. `break-inside: avoid` alone doesn't
+   prevent this; the inline-block atomicity does. width:100% fills the column. */
+.shorts-masonry-item {
+  display: inline-block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Homepage section headers ---------- */
+
+/* bulma.io "feature" style: an icon on the left, a centred dark bold title with a
+   primary-coloured subtitle, and a "read more" button on the right. */
+.section-header {
+  margin-bottom: 1.5rem;
+}
+
+/* Each homepage section fades from its accent colour at the top to transparent,
+   like the tinted bands on bulma.io. The accent H/S/L are set inline per section
+   (see home.html); falls back to the Bulma primary colour. */
+.home-section {
+  background-image: linear-gradient(
+    to bottom,
+    hsla(
+      var(--accent-h, var(--bulma-primary-h)),
+      var(--accent-s, var(--bulma-primary-s)),
+      var(--accent-l, var(--bulma-primary-l)),
+      0.16
+    ),
+    transparent 42%
+  );
+}
+.section-header .subtitle {
+  margin-top: 0.5rem;
+}
+/* Icon and subtitle follow the section accent colour, with the lightness clamped
+   so light accents (e.g. gold/warning) stay readable on white. */
+.section-icon {
+  font-size: 2.5rem;
+  color: hsl(
+    var(--accent-h, var(--bulma-primary-h))
+    var(--accent-s, var(--bulma-primary-s))
+    min(var(--accent-l, var(--bulma-primary-l)), 48%)
+  );
+}
+.section-icon i {
+  font-size: inherit;
+}
+.section-subtitle {
+  color: hsl(
+    var(--accent-h, var(--bulma-primary-h))
+    var(--accent-s, var(--bulma-primary-s))
+    min(var(--accent-l, var(--bulma-primary-l)), 42%)
+  );
+}
+
+/* ---------- Trophies ---------- */
+
+/* Game cards */
+.trophy-game-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* Content fills the card below the art; the progress bar sinks to the bottom so
+   it lines up across the (equal-height) cards in a row, regardless of how tall
+   the art is or whether the title/platform tags wrap. */
+.trophy-game-card .card-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.trophy-game-card .trophy-progress { margin-top: auto; }
+/* One fixed aspect ratio for the header area so every card's image/banner is the
+   same height (and scales identically per row, since cards share a width). Both
+   real cover art and the title-banner fallback fill it. */
+.trophy-game-media {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+}
+.trophy-game-media .card-image,
+.trophy-game-media figure.image {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.trophy-game-card .trophy-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.trophy-header-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--bulma-link), var(--bulma-primary));
+}
+/* Completion badge over the card art */
+.trophy-game-badge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-weight: var(--bulma-weight-bold);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* Centred "Made with Bulma"-style page header: title, accent divider, subtitle.
+   Used theme-wide via the page-head.html partial. */
+.page-head .title {
+  margin-bottom: 0;
+}
+.page-head-divider {
+  display: block;
+  width: 3rem;
+  height: 4px;
+  margin: 1rem auto 1.25rem;
+  border-radius: var(--bulma-radius-rounded);
+  background: var(--bulma-warning);
+}
+.page-head .subtitle {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.page-head .subtitle p:last-child {
+  margin-bottom: 0;
+}
+.trophy-source .level .icon {
+  color: var(--bulma-text);
+}
+
+/* Game page cover: header art as a full-bleed banner with the title, platforms and
+   completion overlaid. Used by trophies/page.html when the game has header art;
+   art-less games (e.g. PSN) fall back to the centred page-head instead. */
+.trophy-cover {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 320px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bulma-link), var(--bulma-primary));
+}
+.trophy-cover-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.trophy-cover-overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 4rem 1.5rem 1.75rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+}
+.trophy-cover .title {
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+@media screen and (max-width: 768px) {
+  .trophy-cover {
+    min-height: 220px;
+  }
+  .trophy-cover .title {
+    font-size: 2rem;
+  }
+}
+
+/* Trophy list: a row per trophy */
+.trophy-list {
+  display: grid;
+  /* min(280px,100%) so a single card never exceeds a narrow viewport (overflow). */
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.trophy {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.6rem 0.6rem 0.6rem 0.75rem;
+  border: 1px solid var(--bulma-border-weak);
+  /* Coloured tier accent on the leading edge; defaults to neutral, overridden per tier. */
+  border-inline-start: 3px solid var(--trophy-tier, var(--bulma-border));
+  border-radius: var(--bulma-radius);
+  background: var(--bulma-scheme-main-bis);
+}
+/* Tier accent colour, echoing the type-badge palette (saturated for the edge). */
+.trophy-tier-platinum    { --trophy-tier: #4aa6c4; }
+.trophy-tier-gold        { --trophy-tier: #d6a700; }
+.trophy-tier-silver      { --trophy-tier: #9aa5b1; }
+.trophy-tier-bronze      { --trophy-tier: #c07b42; }
+.trophy-tier-achievement { --trophy-tier: var(--bulma-border); }
+/* Locked trophies keep the layout but drop the colourful edge. */
+.trophy.is-locked { --trophy-tier: var(--bulma-border-weak); }
+.trophy-icon {
+  position: relative;
+  flex: 0 0 auto;
+  /* Don't stretch with the (possibly taller) card, so the earned mark stays
+     anchored to the bottom edge of the image rather than the card. */
+  align-self: flex-start;
+}
+.trophy-icon img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--bulma-radius-small);
+  box-shadow: 0 0 0 1px var(--bulma-border-weak), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.trophy-mark {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  background: var(--bulma-scheme-main);
+  border-radius: 50%;
+}
+.trophy-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.trophy-name {
+  font-weight: var(--bulma-weight-semibold);
+  margin-bottom: 0.15rem;
+}
+/* Trailing meta (earned date + rarity) sinks to the bottom so that, in an
+   equal-height grid, these lines align across cards regardless of how many
+   lines the name/description take. */
+.trophy-meta { margin-top: auto; }
+.trophy-desc {
+  margin-bottom: 0.25rem;
+}
+/* Earned date: small check icon sitting snug against the date text. */
+.trophy-earned {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.trophy-earned .icon { color: inherit; }
+/* Locked trophies are desaturated and dimmed */
+.trophy.is-locked .trophy-icon img {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+.trophy.is-locked .trophy-name {
+  color: var(--bulma-text-weak);
+}
+
+/* Type badges */
+.trophy-badge .icon {
+  margin-right: 0.15rem;
+}
+.trophy-platinum  { background-color: #cfe9f1; color: #1b6b86; }
+.trophy-gold      { background-color: #f6e6b4; color: #7a5b00; }
+.trophy-silver    { background-color: #e4e7ea; color: #4a5560; }
+.trophy-bronze    { background-color: #ecd3bf; color: #7a4a25; }
+.trophy-achievement { background-color: var(--bulma-scheme-main-ter); color: var(--bulma-text-strong); }
+
+/* Platform tags */
+.trophy-platform-psn  .icon,
+.trophy-platform-steam .icon { margin-right: 0.15rem; }
+
+.trophy-progress .progress { margin-bottom: 0.25rem; }
+.trophy-stats .heading { margin-bottom: 0.25rem; }
+
+/* Homepage trophies bar */
+.trophy-strip {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+.trophy-strip-item {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 240px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--bulma-border-weak);
+  border-radius: var(--bulma-radius);
+  background: var(--bulma-scheme-main-bis);
+  color: inherit;
+}
+.trophy-strip-icon img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--bulma-radius-small);
+}
+.trophy-strip-name {
+  display: block;
+  font-weight: var(--bulma-weight-semibold);
+}
+/* Recently 100%-completed: a single full-width, short hero banner */
+.trophy-hero {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--bulma-radius-large);
+  color: #fff;
+}
+.trophy-hero--noart {
+  background: linear-gradient(135deg, var(--bulma-link), var(--bulma-primary));
+}
+.trophy-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.trophy-hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  min-height: 132px;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.15) 100%);
+}
+.trophy-hero .trophy-hero-title {
+  color: #fff;
+  margin: 0;
+}
+.trophy-hero-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.trophy-hero-date {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: var(--bulma-size-small);
+}
+.trophy-hero-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.trophy-hero-icon img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--bulma-radius-small);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+@media screen and (max-width: 768px) {
+  .trophy-hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .trophy-hero-icon img { width: 40px; height: 40px; }
+}
+
+/* ── Content ⇄ game linking ─────────────────────────────────────────────── */
+
+/* Deep-link target: keep the trophy clear of the sticky-ish top when jumped to. */
+.trophy[id] { scroll-margin-top: 1rem; }
+
+/* Both inline embeds sit on their own line, constrained so they read as a compact
+   insert rather than a full-width banner. */
+.trophy-inline,
+.trophy-embed {
+  max-width: 30rem;
+  margin: 1.25rem 0;
+}
+
+/* Inline {{< trophy >}} card in article prose. The wrapper only sets width +
+   spacing; the inner `.trophy` is the single card, so a lone mention reads
+   exactly like a row in the trophies list (no extra box around the box). */
+.trophy-inline .trophy { margin: 0; }
+.trophy-inline .trophy,
+.trophy-inline-grid .trophy {
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.trophy-inline .trophy:hover,
+.trophy-inline-grid .trophy:hover {
+  box-shadow: var(--bulma-shadow);
+  transform: translateY(-2px);
+}
+
+/* Several {{< trophy >}} names at once → a responsive grid of trophy cards. */
+.trophy-inline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.trophy-inline-grid .trophy { height: 100%; margin: 0; }
+
+/* Inline {{< game >}} embed: a compact, whole-box-clickable game card. Root is a
+   .box (relative) so the stretched-link ::after can cover it. */
+.trophy-embed {
+  position: relative;
+  padding: 1rem;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.trophy-embed:hover { box-shadow: var(--bulma-shadow); transform: translateY(-2px); }
+.trophy-embed a.stretched-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.trophy-embed .media { align-items: center; }
+.trophy-embed .media-content { overflow: hidden; }
+.trophy-embed-media {
+  position: relative;
+  width: 140px;
+  flex: none;
+}
+/* Completion % overlaid in the corner of the art, store-style. */
+.trophy-embed-pct {
+  position: absolute;
+  top: 0.35rem;
+  inset-inline-end: 0.35rem;
+  font-weight: var(--bulma-weight-semibold);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.trophy-embed-media .image img,
+.trophy-embed-media .trophy-art {
+  display: block;
+  width: 140px;
+  height: 66px;
+  object-fit: cover;
+  border-radius: var(--bulma-radius-small);
+}
+.trophy-embed-media .trophy-header-fallback {
+  min-height: 66px;
+  padding: 0.5rem;
+  border-radius: var(--bulma-radius-small);
+}
+@media screen and (max-width: 480px) {
+  .trophy-embed .media { flex-direction: column; align-items: stretch; }
+  .trophy-embed-media { width: 100%; }
+  .trophy-embed-media .image img,
+  .trophy-embed-media .trophy-art,
+  .trophy-embed-media .trophy-header-fallback { width: 100%; height: auto; }
+}
+
+/* Several {{< game >}} keys at once → a responsive grid of equal-height embeds. */
+.trophy-embed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+.trophy-embed-grid .trophy-embed {
+  max-width: none;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* Stretch the media row to fill the (equal-height) card, then make the content
+   column push its progress bar to the bottom — so progress bars line up across
+   cards even when titles wrap to different numbers of lines. */
+.trophy-embed-grid .media {
+  flex: 1 1 auto;
+  align-items: stretch;
+}
+.trophy-embed-grid .trophy-embed-media { align-self: center; }
+.trophy-embed-grid .media-content {
+  display: flex;
+  flex-direction: column;
+}
+.trophy-embed-grid .trophy-progress { margin-top: auto; }
+
+/* "Mentioned in" backlinks + the media gallery (screenshots + clips) on the game page. */
+.trophy-mention { position: relative; }
+.trophy-mention .media-content { overflow: hidden; }
+.trophy-gallery .image img { object-fit: cover; border-radius: var(--bulma-radius-small); }
+
+/* Video embed ({{< video >}}) + the gallery clips on the game page. A responsive
+   16:9 player; the gallery reuses the same <figure>. */
+.video-embed { margin: 1.5rem 0; }
+.video-embed video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: var(--bulma-radius);
+}
+.video-embed figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--bulma-text-weak);
+  text-align: center;
+}
+.trophy-gallery .video-embed { margin: 0; }
+
+/* Static GPX route map ({{< route >}}). Tiles + SVG polyline, no JS.
+   The map is a self-contained "card": capped to its native tile resolution
+   (set inline via max-width), centred, with the stats + attribution as
+   overlays in the classic bottom corners. */
+.route-map {
+  position: relative;
+  margin: 1.75rem auto;
+  border-radius: var(--bulma-radius-large, 8px);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.1), 0 6px 20px rgba(10, 10, 10, 0.12);
+  background: #e8eef0; /* shown if tiles fail to fetch (offline build) */
+  line-height: 0; /* kill the inline-svg descender gap */
+}
+.route-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.route-stats {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin: 0 !important;
+  padding: 0.4rem 0.7rem;
+  line-height: 1.2;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--bulma-radius, 6px);
+  box-shadow: 0 1px 3px rgba(10, 10, 10, 0.2);
+  backdrop-filter: blur(2px);
+  font-weight: 600;
+}
+.route-stats .icon-text { align-items: center; color: var(--bulma-text-strong, #363636); }
+.route-stats .icon { color: #cc0f35; }
+.route-attribution {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0.1rem 0.4rem;
+  line-height: 1.4;
+  font-size: 0.65rem;
+  color: #4a4a4a;
+  background: rgba(255, 255, 255, 0.7);
+  border-top-left-radius: var(--bulma-radius-small, 4px);
+}
+.route-attribution a { color: inherit; text-decoration: underline; }
+@media screen and (max-width: 480px) {
+  .route-stats { font-size: 0.7rem; gap: 0.25rem 0.6rem; padding: 0.3rem 0.5rem; }
+}
+
+/* Give the previous/next pagination controls breathing room from the content above. */
+.pagination {
+  margin-top: 2rem;
+}
+
+/* Photo attached to a short — rounded, sits between text and the date meta. */
+.short-image {
+  margin: 0.75rem 0;
+}
+.short-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--bulma-radius, 6px);
+}
+
+/* ---------- Page images: contained, not full-bleed ---------- */
+
+/* Body images that sit alone on their own line read better as a centred,
+   contained block rather than spanning the full content column. The cover
+   figure (figure.image) is intentionally left full-width, and truly inline
+   prose images (an image mixed with text in a paragraph) are untouched. */
+.content p:has(> .lightbox:only-child) {
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* ---------- Lightbox (pure CSS, no JS) ---------- */
+
+/* A click enlarges an image/map to a full-viewport overlay using :target — the
+   wrapper's id becomes the URL fragment (see _partials/lightbox.html). Closing
+   navigates to a fragment that matches no element, so the overlay un-targets
+   without scrolling. Inline, the wrapper behaves like the media it holds. */
+.lightbox { display: inline-block; line-height: 0; }
+.lightbox .lightbox-open { display: inline-block; cursor: zoom-in; }
+/* Figure-wrapped media (route map, short photo, cover) fills its container so
+   no figure background bleeds around a shrink-to-fit inline-block. */
+.lightbox-block,
+.lightbox-route { display: block; }
+.lightbox-block .lightbox-open,
+.lightbox-route .lightbox-open { display: block; }
+.lightbox-backdrop { display: none; }
+
+/* Active overlay: the wrapper covers the viewport and centres the media. */
+.lightbox:target {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.9);
+  line-height: normal;
+  overflow: auto;
+}
+.lightbox:target .lightbox-open {
+  cursor: zoom-out;
+  max-width: 100%;
+  max-height: 100%;
+}
+.lightbox:target .lightbox-open :is(img, svg) {
+  max-width: 100%;
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+/* The backdrop link sits on top of everything while open: any click closes. */
+.lightbox:target .lightbox-backdrop {
+  display: block;
+  position: fixed;
+  inset: 0;
+  cursor: zoom-out;
+}
+
+/* ---------------------------------------------------------------------------
+   CV page (layouts/cv/*) — skills, experience, education, certificates.
+   --------------------------------------------------------------------------- */
+.cv-block {
+  margin-bottom: 3rem;
+  scroll-margin-top: 1rem;
+}
+.cv-heading {
+  border-bottom: 2px solid var(--bulma-border, #dbdbdb);
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+.cv-subhead {
+  margin-bottom: 0.75rem;
+}
+
+/* Skills: categories stacked, each a wrapping row of name+level tag pairs. */
+.cv-skill-group {
+  margin-bottom: 1.5rem;
+}
+.cv-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+.cv-skill {
+  margin-bottom: 0 !important;
+}
+
+/* Experience & education: a simple left-accented timeline. */
+.cv-timeline {
+  margin-bottom: 1.5rem;
+}
+.cv-entry {
+  border-left: 3px solid var(--bulma-link, #485fc7);
+  padding: 0 0 0 1.25rem;
+  margin-bottom: 1.75rem;
+}
+.cv-entry:last-child {
+  margin-bottom: 0;
+}
+.cv-entry-meta {
+  margin-bottom: 0.5rem;
+}
+.cv-entry-summary {
+  margin-bottom: 0.5rem;
+}
+.cv-highlights {
+  list-style: disc;
+  margin: 0 0 0 1.25rem;
+}
+
+/* Courses & certificates: tidy unstyled lists. */
+.cv-courses,
+.cv-certificates {
+  list-style: none;
+  margin-left: 0;
+}
+.cv-courses li,
+.cv-cert {
+  margin-bottom: 0.5rem;
+}
+
+/* CV header: photo beside name/title/contact. Stacks on mobile. */
+.cv-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.cv-photo {
+  flex: 0 0 auto;
+  width: 8rem;
+  height: 8rem;
+  margin: 0;
+}
+.cv-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--bulma-radius-rounded, 9999px);
+}
+.cv-header-body {
+  flex: 1 1 16rem;
+}
+.cv-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  color: var(--bulma-text, #4a4a4a);
+}
+.cv-contact .icon-text {
+  color: inherit;
+}
+
+/* ---------------------------------------------------------------------------
+   Print / "Download as PDF": strip the site chrome but keep the on-screen style
+   (tag colours, accent borders, the round photo) so the PDF matches the page.
+   --------------------------------------------------------------------------- */
+@media print {
+  /* Tag/badge/button backgrounds are off by default when printing — force the
+     browser to honour them so coloured level tags survive into the PDF. */
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: #fff;
+  }
+
+  /* Comfortable, symmetric page margins. */
+  @page {
+    margin: 1.4cm;
+  }
+
+  /* Drop the site chrome and the on-page action buttons. Scope the header/footer
+     to direct children of <body> so the CV's own <header class="cv-header"> (name,
+     photo, contact) is NOT hidden. */
+  body > header,
+  body > footer,
+  .main-content > aside.menu,
+  .cv-header-actions,
+  a.is-sr-only {
+    display: none !important;
+  }
+
+  /* Let the single column flow full-width; reset Bulma's negative .columns margin
+     (it would push content past the page margin and clip it) and the is-fullheight
+     min-height (a big empty band before the content). */
+  .main-content.columns {
+    display: block;
+    margin: 0 !important;
+    min-height: 0 !important;
+  }
+  main#main-content.column {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+  }
+  .section {
+    padding: 0;
+  }
+
+  /* Tighten the vertical rhythm a touch so more fits per page, without changing
+     the visual style. */
+  .cv-header {
+    margin-bottom: 1.5rem;
+  }
+  .cv-block {
+    margin-bottom: 1.25rem;
+    break-inside: avoid;
+  }
+  /* Keep a section heading attached to the first entry below it. */
+  .cv-heading {
+    break-after: avoid;
+  }
+  .cv-entry,
+  .cv-skill,
+  .cv-cert,
+  .cv-courses li {
+    break-inside: avoid;
+  }
+
+  /* Preserve the coloured pills and the round avatar exactly as on screen. */
+  .tag,
+  .cv-photo img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Avoid orphaned/widowed lines in the profile and summaries. */
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Links read as plain text on paper (the URLs are in the contact line / hidden
+     buttons), so don't tint or underline body links in the printout. */
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar TOC: keep it visible while the article scrolls (desktop only).
+   The aside is a flex column child of .main-content, so it stretches to the
+   full row height by default — sticky then has no room to move. align-self:
+   flex-start shrinks it to its content so position: sticky can pin it; the
+   inner content scrolls within max-height when the TOC is taller than the
+   viewport. On mobile the columns stack, so the aside flows normally. */
+@media screen and (min-width: 769px) {
+  .main-content > aside.menu {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+}

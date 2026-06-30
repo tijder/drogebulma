@@ -1,0 +1,23 @@
+{{- /*
+Wraps rendered media (an <img> or inline <svg>) in a pure-CSS, no-JS lightbox.
+
+Clicking the media enlarges it to a full-viewport overlay using the `:target`
+pseudo-class (the wrapper's id becomes the URL fragment); clicking again — or
+anywhere on the dimmed backdrop — closes it (the close link points at a fragment
+that matches no element, so the overlay un-targets without scrolling the page).
+Styling lives in main.css (`.lightbox*`). No keyboard Escape (that needs JS);
+the focusable backdrop link closes via Enter.
+
+@context {string} id     Unique id within the page (becomes the :target fragment).
+@context {string} inner  Pre-rendered media HTML (<img>/<svg>) to make zoomable.
+@context {string} label  Optional aria-label for the open link (default i18n).
+@context {string} class  Optional extra class on the wrapper.
+
+@example: {{ partial "lightbox.html" (dict "id" "lb-1" "inner" $imgHTML) }}
+*/ -}}
+{{- $id := .id -}}
+{{- $label := .label | default (i18n "enlargeImage") -}}
+<span id="{{ $id }}" class="lightbox{{ with .class }} {{ . }}{{ end }}">
+  <a class="lightbox-open" href="#{{ $id }}" aria-label="{{ $label }}">{{ .inner | safeHTML }}</a>
+  <a class="lightbox-backdrop" href="#lightbox-closed" aria-label="{{ i18n "closeImage" }}"></a>
+</span>

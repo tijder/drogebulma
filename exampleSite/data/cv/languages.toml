@@ -1,0 +1,31 @@
+# Talenkennis (gesproken talen). `name` is een taalmap die de theme via trophy/loc.html
+# lokaliseert; `level` is een van: native | fluent | advanced | intermediate | basic
+# (label + kleur via i18n, net als de skill-niveaus).
+
+[[languages]]
+  level = "native"
+  [languages.name]
+    nl = "Nederlands"
+    en = "Dutch"
+    fr = "Néerlandais"
+
+[[languages]]
+  level = "fluent"
+  [languages.name]
+    nl = "Engels"
+    en = "English"
+    fr = "Anglais"
+
+[[languages]]
+  level = "intermediate"
+  [languages.name]
+    nl = "Duits"
+    en = "German"
+    fr = "Allemand"
+
+[[languages]]
+  level = "basic"
+  [languages.name]
+    nl = "Frans"
+    en = "French"
+    fr = "Français"

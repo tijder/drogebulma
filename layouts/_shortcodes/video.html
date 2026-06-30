@@ -1,0 +1,56 @@
+{{- /*
+{{< video "clip.mp4" >}} — embeds an MP4 (or other browser-playable) video from the
+current page bundle as a native, no-JS HTML5 <video> player. Accepts the resource
+name as the first positional argument or as a named `src` argument.
+
+Resolves a bundle resource first (so the file goes through Hugo's pipeline and gets a
+permalink); falls back to using `src` verbatim as a URL when no resource matches
+(e.g. an external/remote MP4). Renders nothing and warnf's when `src` is missing.
+
+When the video is a bundle resource, `caption` and `poster` fall back to the resource's
+front-matter `title` and `params.poster` — the same fields the trophy gallery reads — so
+a video tagged once in front matter needs no repeated shortcode args. An explicit
+`caption`/`poster` argument overrides the resource value.
+
+@param {string}  src      Resource filename in the page bundle, or an external URL.
+@param {string}  poster   Still image shown before playback (resource or URL).
+                          Defaults to the resource's `params.poster`.
+@param {string}  caption  <figcaption> text. Defaults to the resource's `title`.
+@param {bool}    loop     Loop playback (default false).
+@param {bool}    autoplay Autoplay — implies muted (browsers block sound-on autoplay).
+@param {bool}    muted    Start muted (default false; forced true when autoplay).
+
+@example: {{< video "intro.mp4" >}}
+@example: {{< video src="intro.mp4" poster="cover.jpg" caption="Speeltrailer" >}}
+@example: {{< video "loop.mp4" loop=true autoplay=true >}}
+*/ -}}
+{{- $src := or (.Get "src") (.Get 0) -}}
+{{- if not $src -}}
+  {{- warnf "[video shortcode] missing video filename (in %s)" .Page.Path -}}
+{{- else -}}
+  {{- $url := $src -}}
+  {{- $mime := "video/mp4" -}}
+  {{- $caption := .Get "caption" -}}
+  {{- $poster := .Get "poster" -}}
+  {{- with .Page.Resources.GetMatch $src -}}
+    {{- $url = .RelPermalink -}}
+    {{- with .MediaType.Type }}{{ $mime = . }}{{ end -}}
+    {{- if not $caption }}{{ $caption = .Title }}{{ end -}}
+    {{- if not $poster }}{{ $poster = .Params.poster }}{{ end -}}
+  {{- end -}}
+  {{- with $poster -}}
+    {{- with $.Page.Resources.GetMatch . }}{{ $poster = .RelPermalink }}{{ end -}}
+  {{- end -}}
+  {{- $autoplay := .Get "autoplay" | default false -}}
+  {{- $muted := or ($.Get "muted" | default false) $autoplay -}}
+  <figure class="video-embed">
+    <video controls preload="metadata" playsinline
+      {{- with $poster }} poster="{{ . }}"{{ end }}
+      {{- if $autoplay }} autoplay{{ end }}
+      {{- if $muted }} muted{{ end }}
+      {{- if .Get "loop" }} loop{{ end }}>
+      <source src="{{ $url }}" type="{{ $mime }}">
+    </video>
+    {{- with $caption }}<figcaption>{{ . }}</figcaption>{{ end }}
+  </figure>
+{{- end -}}

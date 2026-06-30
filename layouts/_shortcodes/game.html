@@ -1,0 +1,28 @@
+{{- /*
+{{< game "shadow realm" >}} — drops a compact, clickable embed of a trophies game into
+article prose. Accepts one or more matchKeys; with several it renders a neat responsive
+grid of embeds. Arguments are matched case-insensitively via anchorize. Trophies pages
+are generated per content language, so the embed links to the game page in the current
+article's language, falling back to the default-language site (`index hugo.Sites 0`).
+
+@example: {{< game "shadow realm" >}}
+@example: {{< game "shadow realm" "pixel quest" "dual world" >}}
+*/ -}}
+{{- $games := slice }}
+{{- range .Params }}
+  {{- $ref := printf "/trophies/%s" (anchorize .) }}
+  {{- with or ($.Page.Site.GetPage $ref) ((index hugo.Sites 0).GetPage $ref) }}
+  {{- $games = $games | append . }}
+  {{- else }}
+  {{- warnf "[game shortcode] no trophies page found for %q (in %s)" . $.Page.Path }}
+  {{- end }}
+{{- end }}
+{{- if eq (len $games) 1 }}
+{{ partial "trophy/game-embed.html" (index $games 0) }}
+{{- else if gt (len $games) 1 }}
+<div class="trophy-embed-grid">
+{{- range $games }}
+{{ partial "trophy/game-embed.html" . }}
+{{- end }}
+</div>
+{{- end -}}

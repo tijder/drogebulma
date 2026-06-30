@@ -1,0 +1,14 @@
+{{- /*
+Renders a responsive Bulma column grid of game cards.
+
+@context {pages} pages  The game pages to render.
+
+@example: {{ partial "trophy/game-grid.html" (dict "pages" .Pages) }}
+*/ -}}
+<div class="columns is-multiline">
+  {{- range .pages }}
+  <div class="column is-12-mobile is-6-tablet is-4-desktop">
+    {{ partial "trophy/game-card.html" . }}
+  </div>
+  {{- end }}
+</div>

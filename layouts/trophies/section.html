@@ -1,0 +1,31 @@
+{{ define "main" }}
+<section class="section">
+  <div class="container">
+    {{ partial "page-head.html" (dict "title" .Title "subtitle" .Content "page" .) }}
+
+    {{ partialCached "trophy/stats.html" . }}
+
+    <div class="trophy-filters mb-4">
+      {{- with site.Taxonomies.platforms }}
+      <div class="tags">
+        {{- range $name, $term := . }}
+        <a class="tag is-link is-light" href="{{ $term.Page.RelPermalink }}">{{ i18n (printf "platform_%s" $name) | default $name }} ({{ len $term.Pages }})</a>
+        {{- end }}
+      </div>
+      {{- end }}
+      {{- with site.Taxonomies.trophytypes }}
+      <div class="tags">
+        {{- range $name, $term := . }}
+        <a class="tag is-light trophy-{{ $name }}" href="{{ $term.Page.RelPermalink }}">{{ i18n (printf "trophyType_%s" $name) | default $name }} ({{ len $term.Pages }})</a>
+        {{- end }}
+      </div>
+      {{- end }}
+    </div>
+
+    {{ $sorted := sort .Pages "Params.bestPct" "desc" }}
+    {{ $paginator := .Paginate $sorted }}
+    {{ partial "trophy/game-grid.html" (dict "pages" $paginator.Pages) }}
+    {{ partial "pagination.html" . }}
+  </div>
+</section>
+{{ end }}

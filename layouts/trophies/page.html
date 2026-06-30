@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{- $g := . }}
+{{- $pct := .Params.pct | default 0 }}
+{{- $color := "is-danger" }}
+{{- if ge $pct 100 }}{{ $color = "is-success" }}{{ else if ge $pct 50 }}{{ $color = "is-warning" }}{{ end }}
+
+{{- /* Cover banner: when the game has header art, show it full-bleed with the
+       title, platforms and overall completion overlaid. Falls back to the plain
+       centred page-head when no art is available (e.g. PSN-only games). */}}
+{{- if .Params.header }}
+<div class="trophy-cover">
+  {{ partial "trophy/image.html" (dict "platform" .Params.headerPlatform "id" .Params.headerId "kind" "header" "remote" .Params.header "alt" .Title "class" "trophy-cover-bg") }}
+  <div class="trophy-cover-overlay">
+    <div class="container trophy-cover-content">
+      <div class="tags mb-2">
+        {{- range .Params.platforms }}
+        <span class="tag is-dark trophy-platform-{{ . }}">
+          <span class="icon is-small"><i class="iconoir-{{ if eq . "psn" }}playstation-gamepad{{ else }}gamepad{{ end }}"></i></span>
+          <span>{{ i18n (printf "platform_%s" .) | default . }}</span>
+        </span>
+        {{- end }}
+      </div>
+      <h1 class="title is-1 has-text-white mb-3">{{ .Title }}</h1>
+      <span class="tag is-medium {{ $color }}">{{ .Params.earned }}/{{ .Params.total }} &middot; {{ $pct }}%</span>
+    </div>
+  </div>
+</div>
+{{- end }}
+
+<section class="section">
+  <div class="container">
+
+    {{- if not .Params.header }}
+    {{ partial "page-head.html" (dict "title" .Title "page" .) }}
+    <div class="tags is-centered mb-6">
+      {{- range .Params.platforms }}
+      <span class="tag is-dark is-medium trophy-platform-{{ . }}">
+        <span class="icon is-small"><i class="iconoir-{{ if eq . "psn" }}playstation-gamepad{{ else }}gamepad{{ end }}"></i></span>
+        <span>{{ i18n (printf "platform_%s" .) | default . }}</span>
+      </span>
+      {{- end }}
+    </div>
+    {{- end }}
+
+    {{- /* Sources are pre-sorted highest-progression-first by the content adapter. */}}
+    {{- range $s := .Params.sources }}
+    {{- $color := "is-danger" }}
+    {{- if ge $s.pct 100 }}{{ $color = "is-success" }}{{ else if ge $s.pct 50 }}{{ $color = "is-warning" }}{{ end }}
+    <div class="box trophy-source">
+      <div class="level is-mobile mb-3">
+        <div class="level-left">
+          <div class="level-item">
+            <span class="icon mr-2"><i class="iconoir-{{ if eq $s.platform "psn" }}playstation-gamepad{{ else }}gamepad{{ end }}"></i></span>
+            <div>
+              <p class="title is-5 mb-0">{{ i18n (printf "platform_%s" $s.platform) | default $s.platform }}</p>
+              <p class="is-size-7 has-text-grey">{{ partial "trophy/loc.html" (dict "value" $s.name "lang" site.Language.Lang) }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <span class="tag is-medium {{ $color }}">{{ $s.earned }}/{{ $s.total }} &middot; {{ $s.pct }}%</span>
+          </div>
+        </div>
+      </div>
+      <progress class="progress {{ $color }} is-small mb-4" value="{{ $s.earned }}" max="{{ $s.total }}">{{ $s.pct }}%</progress>
+      <div class="trophy-list">
+        {{- range $tr := sort $s.trophies "earned" "desc" }}
+        {{ partial "trophy/trophy-card.html" (dict "trophy" $tr "platform" $s.platform "id" $s.id "anchor" (printf "trophy-%s-%s-%s" $s.platform $s.id $tr.id)) }}
+        {{- end }}
+      </div>
+    </div>
+    {{- end }}
+
+    {{ partial "trophy/gallery.html" $g }}
+    {{ partial "trophy/related-shorts.html" $g }}
+    {{ partial "trophy/backlinks.html" $g }}
+  </div>
+</section>
+{{ end }}

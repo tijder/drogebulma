@@ -1,0 +1,56 @@
+{{- /*
+CV single page (type = "cv"): a resume-style overview rendered from data/cv/*.toml —
+skills, work experience, education & courses, and diplomas/certificates. Each block is
+omitted when its data file is absent, so a site without cv data renders nothing extra.
+Translatable fields are language maps resolved per language at render time (see the
+cv/* partials and the shared trophy/loc.html resolver).
+*/ -}}
+{{ define "main" }}
+  {{- $lang := site.Language.Lang -}}
+  {{- $cv := hugo.Data.cv -}}
+  <section class="section">
+    {{ partial "cv/header.html" . }}
+
+    {{- with .Content }}
+    <div class="cv-block" id="cv-profile">
+      <h2 class="title is-3 cv-heading">{{ i18n "cvProfile" }}</h2>
+      <div class="content">{{ . }}</div>
+    </div>
+    {{- end }}
+
+    {{- with $cv.skills }}
+    <div class="cv-block" id="cv-skills">
+      <h2 class="title is-3 cv-heading">{{ i18n "cvSkills" }}</h2>
+      {{ partial "cv/skills.html" (dict "data" . "lang" $lang) }}
+    </div>
+    {{- end }}
+
+    {{- with $cv.languages }}
+    <div class="cv-block" id="cv-languages">
+      <h2 class="title is-3 cv-heading">{{ i18n "cvLanguages" }}</h2>
+      {{ partial "cv/languages.html" (dict "data" . "lang" $lang) }}
+    </div>
+    {{- end }}
+
+    {{- with $cv.experience }}
+    <div class="cv-block" id="cv-experience">
+      <h2 class="title is-3 cv-heading">{{ i18n "cvExperience" }}</h2>
+      {{ partial "cv/experience.html" (dict "data" . "lang" $lang) }}
+    </div>
+    {{- end }}
+
+    {{- with $cv.education }}
+    <div class="cv-block" id="cv-education">
+      <h2 class="title is-3 cv-heading">{{ i18n "cvEducation" }}</h2>
+      {{ partial "cv/education.html" (dict "data" . "lang" $lang) }}
+    </div>
+    {{- end }}
+
+    {{- with $cv.certificates }}
+    <div class="cv-block" id="cv-certificates">
+      <h2 class="title is-3 cv-heading">{{ i18n "cvCertificates" }}</h2>
+      {{ partial "cv/certificates.html" (dict "data" . "lang" $lang) }}
+    </div>
+    {{- end }}
+  </section>
+{{ end }}

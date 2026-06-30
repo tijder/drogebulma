@@ -1,0 +1,120 @@
+{
+  "exportedAt": "2026-06-29T12:00:00Z",
+  "languages": ["en", "nl", "de"],
+  "games": [
+    {
+      "title": { "en": "Pixel Quest" },
+      "matchKey": "pixel quest",
+      "sources": [
+        {
+          "platform": "steam",
+          "id": "1000010",
+          "name": { "en": "Pixel Quest" },
+          "images": { "header": "https://example.org/steam/1000010/header.jpg" },
+          "earned": 4,
+          "total": 4,
+          "trophies": [
+            { "id": "1", "name": { "en": "First Steps", "nl": "Eerste stappen", "de": "Erste Schritte" }, "description": { "en": "Start your adventure.", "nl": "Begin je avontuur.", "de": "Beginne dein Abenteuer." }, "type": "achievement", "iconUrl": "https://example.org/steam/1000010/trophies/icon-pq-1.jpg", "earned": true, "earnedAt": "2024-01-02T18:33:00" },
+            { "id": "2", "name": { "en": "Treasure Hunter", "nl": "Schatzoeker", "de": "Schatzjäger" }, "description": { "en": "Find a hidden chest.", "nl": "Vind een verborgen kist.", "de": "Finde eine versteckte Truhe." }, "type": "achievement", "iconUrl": "https://example.org/steam/1000010/trophies/icon-pq-2.jpg", "earned": true, "earnedAt": "2024-01-05T20:10:00" },
+            { "id": "3", "name": { "en": "Speedrunner" }, "description": { "en": "Finish a level in under a minute." }, "type": "achievement", "iconUrl": "https://example.org/steam/1000010/trophies/icon-pq-3.jpg", "earned": true, "earnedAt": "2026-06-18T19:00:00" },
+            { "id": "4", "name": { "en": "Completionist" }, "description": { "en": "Collect everything." }, "type": "achievement", "iconUrl": "https://example.org/fallback-icon.png", "earned": true, "earnedAt": "2026-06-20T21:15:00" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": { "en": "Shadow Realm", "nl": "Schaduwrijk", "de": "Schattenreich" },
+      "matchKey": "shadow realm",
+      "sources": [
+        {
+          "platform": "psn",
+          "id": "NPWR10000_00",
+          "name": { "en": "Shadow Realm", "nl": "Schaduwrijk", "de": "Schattenreich" },
+          "images": null,
+          "earned": 4,
+          "total": 6,
+          "trophies": [
+            { "id": "0", "name": { "en": "Master of Shadows", "nl": "Meester der Schaduwen", "de": "Meister der Schatten" }, "description": { "en": "Earn every other trophy.", "nl": "Verdien alle andere trofeeën.", "de": "Verdiene alle anderen Trophäen." }, "type": "platinum", "rarity": 1.2, "iconUrl": "https://example.org/psn/NPWR10000_00/trophies/sr-plat.PNG", "earned": true, "earnedAt": "2024-03-11T22:05:00" },
+            { "id": "1", "name": { "en": "Gold Master", "nl": "Goudmeester", "de": "Goldmeister" }, "description": { "en": "Beat the game on hard.", "nl": "Voltooi het spel op moeilijk.", "de": "Schließe das Spiel auf schwer ab." }, "type": "gold", "rarity": 5.4, "iconUrl": "https://example.org/psn/NPWR10000_00/trophies/sr-gold.PNG", "earned": true, "earnedAt": "2024-03-10T19:40:00" },
+            { "id": "2", "name": { "en": "Silver Lining", "nl": "Zilveren Randje" }, "description": { "en": "Complete chapter 3.", "nl": "Voltooi hoofdstuk 3." }, "type": "silver", "rarity": 12.0, "iconUrl": "https://example.org/psn/NPWR10000_00/trophies/sr-s1.PNG", "earned": true, "earnedAt": "2024-02-28T12:00:00" },
+            { "id": "3", "name": { "en": "Silver Shadow", "nl": "Zilveren Schaduw" }, "description": { "en": "Defeat the secret boss.", "nl": "Versla de geheime eindbaas." }, "type": "silver", "rarity": 20.0, "iconUrl": "https://example.org/psn/NPWR10000_00/trophies/sr-s2.PNG", "earned": false },
+            { "id": "4", "name": { "en": "Bronze Beginner", "nl": "Bronzen Beginner" }, "description": { "en": "Finish the tutorial.", "nl": "Voltooi de tutorial." }, "type": "bronze", "rarity": 45.0, "iconUrl": "https://example.org/psn/NPWR10000_00/trophies/sr-b1.PNG", "earned": true, "earnedAt": "2024-02-20T09:15:00" },
+            { "id": "5", "name": { "en": "Bronze Brawler", "nl": "Bronzen Vechter" }, "description": { "en": "Win 10 fights.", "nl": "Win 10 gevechten." }, "type": "bronze", "rarity": 60.0, "iconUrl": "https://example.org/psn/NPWR10000_00/trophies/sr-b2.PNG", "earned": false }
+          ]
+        }
+      ]
+    },
+    {
+      "title": { "en": "Dual World" },
+      "matchKey": "dual world",
+      "sources": [
+        {
+          "platform": "steam",
+          "id": "1000020",
+          "name": { "en": "Dual World" },
+          "images": { "header": "https://example.org/steam/1000020/header.jpg" },
+          "earned": 1,
+          "total": 3,
+          "trophies": [
+            { "id": "1", "name": { "en": "Welcome" }, "description": { "en": "Boot the game." }, "type": "achievement", "iconUrl": "https://example.org/steam/1000020/trophies/dw-st-1.jpg", "earned": true, "earnedAt": "2025-01-01T10:00:00" },
+            { "id": "2", "name": { "en": "Explorer" }, "description": { "en": "Visit every region." }, "type": "achievement", "iconUrl": "https://example.org/steam/1000020/trophies/dw-st-2.jpg", "earned": false },
+            { "id": "3", "name": { "en": "Legend" }, "description": { "en": "Reach max level." }, "type": "achievement", "iconUrl": "https://example.org/steam/1000020/trophies/dw-st-3.jpg", "earned": false }
+          ]
+        },
+        {
+          "platform": "psn",
+          "id": "NPWR10001_00",
+          "name": { "en": "Dual World" },
+          "images": null,
+          "earned": 3,
+          "total": 4,
+          "trophies": [
+            { "id": "0", "name": { "en": "World Conqueror" }, "description": { "en": "Earn every other trophy." }, "type": "platinum", "rarity": 0.8, "iconUrl": "https://example.org/psn/NPWR10001_00/trophies/dw-psn-plat.PNG", "earned": false },
+            { "id": "1", "name": { "en": "Golden Path" }, "description": { "en": "Complete the main story." }, "type": "gold", "rarity": 8.0, "iconUrl": "https://example.org/psn/NPWR10001_00/trophies/dw-psn-gold.PNG", "earned": true, "earnedAt": "2025-02-14T16:20:00" },
+            { "id": "2", "name": { "en": "First Blood" }, "description": { "en": "Win your first battle." }, "type": "bronze", "rarity": 50.0, "iconUrl": "https://example.org/psn/NPWR10001_00/trophies/dw-psn-b1.PNG", "earned": true, "earnedAt": "2025-02-10T11:00:00" },
+            { "id": "3", "name": { "en": "Collector" }, "description": { "en": "Pick up 50 items." }, "type": "bronze", "rarity": 55.0, "iconUrl": "https://example.org/psn/NPWR10001_00/trophies/dw-psn-b2.PNG", "earned": true, "earnedAt": "2025-02-11T18:45:00" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": { "en": "Cosmic Hero", "nl": "Kosmische Held" },
+      "matchKey": "cosmic hero",
+      "sources": [
+        {
+          "platform": "psn",
+          "id": "NPWR10003_00",
+          "name": { "en": "Cosmic Hero", "nl": "Kosmische Held" },
+          "images": null,
+          "earned": 4,
+          "total": 4,
+          "trophies": [
+            { "id": "0", "name": { "en": "Cosmic Legend", "nl": "Kosmische Legende" }, "description": { "en": "Earn every other trophy.", "nl": "Verdien alle andere trofeeën." }, "type": "platinum", "rarity": 2.5, "iconUrl": "https://example.org/psn/NPWR10003_00/trophies/ch-plat.PNG", "earned": true, "earnedAt": "2026-06-15T21:00:00" },
+            { "id": "1", "name": { "en": "Star Collector", "nl": "Sterrenverzamelaar" }, "description": { "en": "Collect all stars.", "nl": "Verzamel alle sterren." }, "type": "gold", "rarity": 9.0, "iconUrl": "https://example.org/psn/NPWR10003_00/trophies/ch-gold.PNG", "earned": true, "earnedAt": "2026-06-14T20:30:00" },
+            { "id": "2", "name": { "en": "Nebula Navigator", "nl": "Nevelnavigator" }, "description": { "en": "Clear the nebula stage.", "nl": "Voltooi het nevelniveau." }, "type": "silver", "rarity": 18.0, "iconUrl": "https://example.org/psn/NPWR10003_00/trophies/ch-silver.PNG", "earned": true, "earnedAt": "2026-06-12T19:00:00" },
+            { "id": "3", "name": { "en": "Liftoff", "nl": "Lancering" }, "description": { "en": "Start the journey.", "nl": "Begin de reis." }, "type": "bronze", "rarity": 70.0, "iconUrl": "https://example.org/psn/NPWR10003_00/trophies/ch-bronze.PNG", "earned": true, "earnedAt": "2026-06-10T18:00:00" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": { "en": "Mini Dungeon" },
+      "matchKey": "mini dungeon",
+      "sources": [
+        {
+          "platform": "psn",
+          "id": "NPWR10002_00",
+          "name": { "en": "Mini Dungeon" },
+          "images": null,
+          "earned": 1,
+          "total": 3,
+          "trophies": [
+            { "id": "1", "name": { "en": "Enter the Dungeon" }, "description": { "en": "Begin the descent." }, "type": "bronze", "rarity": 80.0, "iconUrl": "https://example.org/psn/NPWR10002_00/trophies/md-1.PNG", "earned": true, "earnedAt": "2026-05-01T08:00:00" },
+            { "id": "2", "name": { "en": "Mid-Boss Down" }, "description": { "en": "Defeat the mid-boss." }, "type": "silver", "rarity": 30.0, "iconUrl": "https://example.org/psn/NPWR10002_00/trophies/md-2.PNG", "earned": false },
+            { "id": "3", "name": { "en": "Dungeon Master" }, "description": { "en": "Defeat the final boss." }, "type": "gold", "rarity": 10.0, "iconUrl": "https://example.org/psn/NPWR10002_00/trophies/md-3.PNG", "earned": false }
+          ]
+        }
+      ]
+    }
+  ]
+}

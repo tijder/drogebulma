@@ -1,0 +1,35 @@
+{{- /*
+Renders a single trophy: icon (greyed when locked), name, description, type badge,
+earned date, and PSN rarity when present.
+
+@context {map}    trophy   A trophy object from the data (name, description, type, iconUrl, earned, earnedAt?, rarity?).
+@context {string} platform The owning source platform (for local image resolution).
+@context {string} id       The owning source id.
+@context {string} anchor   Optional element id, so the trophy can be deep-linked (e.g. #trophy-…).
+@context {string} link     Optional URL; when set, the trophy name becomes a link to it.
+
+@example: {{ partial "trophy/trophy-card.html" (dict "trophy" $t "platform" $s.platform "id" $s.id) }}
+*/ -}}
+{{- $t := .trophy }}
+{{- $name := partial "trophy/loc.html" (dict "value" $t.name "lang" site.Language.Lang) }}
+{{- $desc := partial "trophy/loc.html" (dict "value" $t.description "lang" site.Language.Lang) }}
+<div class="trophy trophy-tier-{{ $t.type }} {{ if $t.earned }}is-earned{{ else }}is-locked{{ end }}"{{ with .anchor }} id="{{ . }}"{{ end }}>
+  <div class="trophy-icon">
+    {{ partial "trophy/image.html" (dict "platform" .platform "id" .id "iconUrl" $t.iconUrl "remote" $t.iconUrl "alt" $name) }}
+    {{- if $t.earned }}
+    <span class="trophy-mark icon has-text-success"><i class="iconoir-check-circle"></i></span>
+    {{- else }}
+    <span class="trophy-mark icon has-text-grey"><i class="iconoir-lock"></i></span>
+    {{- end }}
+  </div>
+  <div class="trophy-body">
+    <p class="trophy-name">{{ with .link }}<a href="{{ . }}">{{ $name }}</a>{{ else }}{{ $name }}{{ end }} {{ partial "trophy/type-badge.html" (dict "type" $t.type) }}</p>
+    {{- with $desc }}<p class="trophy-desc is-size-7 has-text-grey">{{ . }}</p>{{ end }}
+    <div class="trophy-meta">
+      {{- if and $t.earned $t.earnedAt }}
+      <p class="trophy-earned is-size-7 has-text-success"><span class="icon is-small"><i class="iconoir-check-circle"></i></span><span>{{ i18n "earned" }} &middot; {{ (time.AsTime $t.earnedAt).Format "2 Jan 2006" }}</span></p>
+      {{- end }}
+      {{- with $t.rarity }}<p class="is-size-7 has-text-grey-light">{{ i18n "rarityOfPlayers" . }}</p>{{ end }}
+    </div>
+  </div>
+</div>

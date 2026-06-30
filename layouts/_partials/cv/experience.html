@@ -1,0 +1,35 @@
+{{- /*
+Renders work experience from data/cv/experience.toml.
+
+Each `jobs` entry has a plain `company`, `start`/`end` ("YYYY-MM") and the localized
+language maps `role`, `summary`, and optional `highlights` (a language map of arrays).
+`trophy/loc.html` resolves a language map to the right value for `lang` — for the
+highlights map it returns the matching array, which we range over.
+
+@context {map}    data  hugo.Data.cv.experience (expects `.jobs`)
+@context {string} lang  current language (site.Language.Lang)
+
+@example: {{ partial "cv/experience.html" (dict "data" $cv.experience "lang" site.Language.Lang) }}
+*/ -}}
+{{- $lang := .lang -}}
+{{- with .data.jobs }}
+<div class="cv-timeline">
+  {{- range . }}
+  <div class="cv-entry">
+    <h3 class="title is-5 mb-1">{{ partial "trophy/loc.html" (dict "value" .role "lang" $lang) }}</h3>
+    <p class="cv-entry-meta">
+      <span class="has-text-weight-semibold">{{ .company }}</span>
+      <span class="has-text-grey"> &middot; {{ partial "cv/period.html" (dict "start" .start "end" .end) }}</span>
+    </p>
+    {{- with partial "trophy/loc.html" (dict "value" .summary "lang" $lang) }}
+    <p class="cv-entry-summary">{{ . }}</p>
+    {{- end }}
+    {{- with partial "trophy/loc.html" (dict "value" .highlights "lang" $lang) }}
+    <ul class="cv-highlights">
+      {{- range . }}<li>{{ . }}</li>{{ end }}
+    </ul>
+    {{- end }}
+  </div>
+  {{- end }}
+</div>
+{{- end }}

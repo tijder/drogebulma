@@ -1,0 +1,14 @@
+{{- /*
+{{< route "track.gpx" >}} — embeds a static, no-JS map of a GPX track from the
+current page bundle, with a distance/elevation/duration stats line. Accepts the
+resource name as the first positional argument, or as a named `src` argument.
+
+@example: {{< route "track.gpx" >}}
+@example: {{< route src="rondje.gpx" >}}
+*/ -}}
+{{- $src := or (.Get "src") (.Get 0) -}}
+{{- if $src -}}
+{{ partial "route/map.html" (dict "page" .Page "src" $src) }}
+{{- else -}}
+{{- warnf "[route shortcode] missing GPX filename (in %s)" .Page.Path -}}
+{{- end -}}

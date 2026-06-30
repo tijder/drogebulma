@@ -1,0 +1,47 @@
+{{- /*
+{{< trophy "shadow realm" "Master of Shadows" >}} — drops one or more trophy cards into
+article prose, each linked to its deep-link anchor on the game page. First argument is
+the game's matchKey; every argument after it is a trophy name (matched against the
+trophy's name in any language, so an English name resolves on a translated page too).
+With more than one trophy the cards are laid out in a neat responsive grid. Trophies
+pages are generated per content language; the lookup prefers the current article's
+language and falls back to the default-language site (`index hugo.Sites 0`).
+
+@example: {{< trophy "shadow realm" "Master of Shadows" >}}
+@example: {{< trophy "shadow realm" "Master of Shadows" "Gold Master" "Silver Lining" >}}
+*/ -}}
+{{- $key := .Get 0 }}
+{{- $names := after 1 .Params }}
+{{- $ref := printf "/trophies/%s" (anchorize $key) }}
+{{- $tp := or ($.Page.Site.GetPage $ref) ((index hugo.Sites 0).GetPage $ref) }}
+{{- if $tp }}
+  {{- $found := slice }}
+  {{- range $name := $names }}
+    {{- $hit := false }}
+    {{- range $s := $tp.Params.sources }}
+      {{- range $t := $s.trophies }}
+        {{- $isMatch := false }}
+        {{- if reflect.IsMap $t.name }}{{ range $t.name }}{{ if eq . $name }}{{ $isMatch = true }}{{ end }}{{ end }}{{ else }}{{ $isMatch = eq $t.name $name }}{{ end }}
+        {{- if and (not $hit) $isMatch }}
+          {{- $hit = true }}
+          {{- $anchor := printf "trophy-%s-%s-%s" $s.platform $s.id $t.id }}
+          {{- $found = $found | append (dict "trophy" $t "platform" $s.platform "id" $s.id "link" (printf "%s#%s" $tp.RelPermalink $anchor)) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+    {{- if not $hit }}{{ warnf "[trophy shortcode] trophy %q not found in game %q (in %s)" $name $key $.Page.Path }}{{ end }}
+  {{- end }}
+  {{- if eq (len $found) 1 }}
+<div class="trophy-inline">
+{{ partial "trophy/trophy-card.html" (index $found 0) }}
+</div>
+  {{- else if gt (len $found) 1 }}
+<div class="trophy-inline-grid">
+{{- range $found }}
+{{ partial "trophy/trophy-card.html" . }}
+{{- end }}
+</div>
+  {{- end }}
+{{- else }}
+  {{- warnf "[trophy shortcode] no trophies page found for %q (in %s)" $key $.Page.Path }}
+{{- end -}}

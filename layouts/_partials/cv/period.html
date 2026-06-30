@@ -1,0 +1,20 @@
+{{- /*
+Renders a localized month-year range from two "YYYY-MM" strings, e.g. "jan 2020 – heden".
+An empty/absent `end` renders the i18n "cvPresent" label. `start` is required; with no
+`start` the partial outputs nothing. Month names localize to the current language
+(Hugo localizes time.Format).
+
+@context {string} start  "YYYY-MM"
+@context {string} end    "YYYY-MM", or empty/absent for an ongoing entry
+
+@example: {{ partial "cv/period.html" (dict "start" .start "end" .end) }}
+*/ -}}
+{{- $layout := "Jan 2006" -}}
+{{- $start := .start | default "" -}}
+{{- $end := .end | default "" -}}
+{{- if $start -}}
+  {{- $startStr := time.Format $layout (printf "%s-01" $start) -}}
+  {{- $endStr := i18n "cvPresent" -}}
+  {{- if $end }}{{ $endStr = time.Format $layout (printf "%s-01" $end) }}{{ end -}}
+  {{- printf "%s – %s" $startStr $endStr -}}
+{{- end -}}

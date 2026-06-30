@@ -1,0 +1,54 @@
+# Vaardigheden voor de CV-pagina, gecategoriseerd. Categorienamen zijn taalmaps
+# (nl/en/fr) die de theme via trophy/loc.html lokaliseert; skillnamen zijn taalneutraal.
+# `level` is een van: beginner | intermediate | advanced | expert (label + kleur via i18n).
+
+[[categories]]
+  [categories.title]
+    nl = "Programmeertalen"
+    en = "Programming languages"
+    fr = "Langages de programmation"
+  [[categories.skills]]
+    name  = "Java"
+    level = "expert"
+  [[categories.skills]]
+    name  = "JavaScript"
+    level = "advanced"
+  [[categories.skills]]
+    name  = "Python"
+    level = "intermediate"
+  [[categories.skills]]
+    name  = "Go"
+    level = "beginner"
+
+[[categories]]
+  [categories.title]
+    nl = "Besturingssystemen"
+    en = "Operating systems"
+    fr = "Systèmes d'exploitation"
+  [[categories.skills]]
+    name  = "Linux"
+    level = "expert"
+  [[categories.skills]]
+    name  = "Windows"
+    level = "advanced"
+  [[categories.skills]]
+    name  = "macOS"
+    level = "intermediate"
+
+[[categories]]
+  [categories.title]
+    nl = "CI/CD-tools"
+    en = "CI/CD tools"
+    fr = "Outils CI/CD"
+  [[categories.skills]]
+    name  = "Git"
+    level = "expert"
+  [[categories.skills]]
+    name  = "Docker"
+    level = "advanced"
+  [[categories.skills]]
+    name  = "GitHub Actions"
+    level = "advanced"
+  [[categories.skills]]
+    name  = "Kubernetes"
+    level = "intermediate"

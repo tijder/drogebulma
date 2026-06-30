@@ -1,0 +1,81 @@
+{{- /*
+Homepage trophies bar: recently earned trophies + recently 100%-completed games.
+Aggregated at build time from the generated trophies game pages. Renders nothing
+when the site has no trophies, so non-trophy sites are unaffected.
+
+@example: {{ partial "trophy/home-bar.html" . }}
+*/ -}}
+{{- $games := where site.RegularPages "Section" "trophies" }}
+{{- if $games }}
+
+{{- /* Flatten all earned trophies, newest first. earnedAt is ISO so it sorts as a string. */}}
+{{- $earned := slice }}
+{{- range $games }}
+  {{- $g := . }}
+  {{- range $s := .Params.sources }}
+    {{- range $s.trophies }}
+      {{- if and .earned .earnedAt }}
+        {{- $earned = $earned | append (dict "t" . "platform" $s.platform "id" $s.id "game" $g.Title "url" $g.RelPermalink "at" .earnedAt) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $recent := first 10 (sort $earned "at" "desc") }}
+
+{{- /* The single most recently 100%-completed game. */}}
+{{- $recentDone := first 1 (sort (where $games "Params.pct" 100) "Params.lastEarnedAt" "desc") }}
+
+{{- $color := "warning" }}
+<section class="section home-section" style="--accent-h:var(--bulma-{{ $color }}-h);--accent-s:var(--bulma-{{ $color }}-s);--accent-l:var(--bulma-{{ $color }}-l)">
+  <div class="container">
+    {{ partial "section-header.html" (dict "title" (i18n "trophies") "subtitle" (i18n "trophiesSubtitle") "href" (site.GetPage "/trophies").RelPermalink "icon" "iconoir-trophy" "color" $color) }}
+    <p class="heading">{{ i18n "recentlyEarned" }}</p>
+    <div class="trophy-strip">
+      {{- range $recent }}
+      <a class="trophy-strip-item" href="{{ .url }}">
+        {{- $name := partial "trophy/loc.html" (dict "value" .t.name "lang" site.Language.Lang) }}
+        <span class="trophy-strip-icon">
+          {{ partial "trophy/image.html" (dict "platform" .platform "id" .id "iconUrl" .t.iconUrl "remote" .t.iconUrl "alt" $name) }}
+        </span>
+        <span class="trophy-strip-meta">
+          <span class="trophy-strip-name">{{ $name }}</span>
+          <span class="is-size-7 has-text-grey">{{ .game }} &middot; {{ (time.AsTime .at).Format "2 Jan 2006" }}</span>
+        </span>
+      </a>
+      {{- end }}
+    </div>
+
+    {{- with $recentDone }}
+    <p class="heading mt-5">{{ i18n "recentlyCompleted" }}</p>
+    {{- range . }}
+    {{- $g := . }}
+    {{- /* The game's earned trophies, newest first, for the icon strip. */}}
+    {{- $icons := slice }}
+    {{- range $s := .Params.sources }}
+      {{- range $s.trophies }}
+        {{- if and .earned .earnedAt }}{{ $icons = $icons | append (dict "t" . "platform" $s.platform "id" $s.id "at" .earnedAt) }}{{ end }}
+      {{- end }}
+    {{- end }}
+    {{- $icons = first 12 (sort $icons "at" "desc") }}
+    <a class="trophy-hero{{ if not .Params.header }} trophy-hero--noart{{ end }}" href="{{ .RelPermalink }}">
+      {{- with .Params.header }}
+      {{ partial "trophy/image.html" (dict "platform" $g.Params.headerPlatform "id" $g.Params.headerId "kind" "header" "remote" . "alt" $g.Title "class" "trophy-hero-bg") }}
+      {{- end }}
+      <div class="trophy-hero-content">
+        <div class="trophy-hero-info">
+          <span class="tag is-success is-medium">100%</span>
+          <span class="trophy-hero-title title is-4">{{ .Title }}</span>
+          {{- with .Params.lastEarnedAt }}<span class="trophy-hero-date">{{ (time.AsTime .).Format "2 Jan 2006" }}</span>{{ end }}
+        </div>
+        <div class="trophy-hero-icons">
+          {{- range $icons }}
+          <span class="trophy-hero-icon">{{ partial "trophy/image.html" (dict "platform" .platform "id" .id "iconUrl" .t.iconUrl "remote" .t.iconUrl "alt" (partial "trophy/loc.html" (dict "value" .t.name "lang" site.Language.Lang))) }}</span>
+          {{- end }}
+        </div>
+      </div>
+    </a>
+    {{- end }}
+    {{- end }}
+  </div>
+</section>
+{{- end }}

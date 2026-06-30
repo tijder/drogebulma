@@ -1,0 +1,7 @@
+{{- /*
+Trophies content adapter — default content language (nl). Generation lives in the
+shared `trophy-build.html` partial so the English adapter (`_content.en.gotmpl`) can
+reuse it verbatim; the partial localizes to .Site.Language.Lang. Point hugo.Data at
+the real export by renaming the data file (see the partial).
+*/ -}}
+{{ partial "trophy-build.html" . }}

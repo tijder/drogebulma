@@ -1,0 +1,23 @@
+{{- /*
+Returns the nav accent colour (a Bulma colour name like "danger"/"link") for a
+page, by matching the page's top-level section against the main-menu entry that
+links to it (the same `[menus.main.params].color` used for the navbar accent).
+Returns an empty string when there's no matching menu entry.
+
+@context {page} page The page whose section colour to look up.
+
+@example: {{ partial "menu-color.html" (dict "page" .) }}
+*/ -}}
+{{- $color := "" }}
+{{- with .page.FirstSection }}
+  {{- $section := . }}
+  {{- range site.Menus.main }}
+    {{- $entry := . }}
+    {{- with $entry.Page }}
+      {{- if eq .RelPermalink $section.RelPermalink }}
+        {{- $color = $entry.Params.color }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- return $color }}

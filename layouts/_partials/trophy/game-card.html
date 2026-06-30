@@ -1,0 +1,41 @@
+{{- /*
+Renders a game as a card: header art (Steam) or a title-banner fallback (PSN, no
+art), a completion badge over the art, platform tags, and the progress bar of the
+best-performing source. The whole card is clickable via the stretched-link pattern.
+
+@context {page} A generated trophies game page (see the content adapter).
+
+@example: {{ partial "trophy/game-card.html" . }}
+*/ -}}
+{{- $p := . }}
+{{- $pct := $p.Params.bestPct | default 0 }}
+{{- $color := "is-danger" }}
+{{- if ge $pct 100 }}{{ $color = "is-success" }}{{ else if ge $pct 50 }}{{ $color = "is-warning" }}{{ end }}
+<div class="card trophy-game-card">
+  <div class="trophy-game-media">
+    {{- with $p.Params.header }}
+    <div class="card-image">
+      <figure class="image is-2by1">
+        {{ partial "trophy/image.html" (dict "platform" $p.Params.headerPlatform "id" $p.Params.headerId "kind" "header" "remote" . "alt" $p.Title "class" "trophy-art") }}
+      </figure>
+    </div>
+    {{- else }}
+    <div class="trophy-header-fallback">
+      <span class="title is-5 has-text-white">{{ $p.Title }}</span>
+    </div>
+    {{- end }}
+    <span class="tag is-medium {{ $color }} trophy-game-badge">{{ $pct }}%</span>
+  </div>
+  <div class="card-content">
+    <h2 class="title is-6"><a class="stretched-link" href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h2>
+    <div class="tags">
+      {{- range $p.Params.platforms }}
+      <span class="tag is-dark trophy-platform-{{ . }}">
+        <span class="icon is-small"><i class="iconoir-{{ if eq . "psn" }}playstation-gamepad{{ else }}gamepad{{ end }}"></i></span>
+        <span>{{ i18n (printf "platform_%s" .) | default . }}</span>
+      </span>
+      {{- end }}
+    </div>
+    {{ partial "trophy/progress.html" (dict "earned" $p.Params.bestEarned "total" $p.Params.bestTotal) }}
+  </div>
+</div>

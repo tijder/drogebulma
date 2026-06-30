@@ -1,0 +1,17 @@
+<div class="card">
+  {{- if or (.Resources.GetMatch "*.{jpg,jpeg,png,webp}") .Params.image }}
+  <div class="card-image">
+    <figure class="image">
+      {{ partial "page-image.html" (dict "page" . "fill" "600x400") }}
+    </figure>
+  </div>
+  {{- end }}
+
+  <div class="card-content">
+    <div class="content">
+      <h2 class="title is-5"><a class="stretched-link" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+      {{ partial "card-summary.html" . }}
+    </div>
+    {{ partial "card-meta.html" . }}
+  </div>
+</div>

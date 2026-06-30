@@ -1,0 +1,16 @@
+{{ define "main" }}
+<section class="section">
+    <div class="container">
+      {{ partial "page-head.html" (dict "title" .Title "subtitle" .Content "page" .) }}
+      <div class="shorts-masonry">
+        {{ $pages := .Paginator.Pages }}
+        {{ range $pages }}
+          <div class="shorts-masonry-item">
+            {{ partial "short.html" . }}
+          </div>
+        {{ end }}
+      </div>
+      {{ partial "pagination.html" . }}
+    </div>
+  </section>
+{{ end }}

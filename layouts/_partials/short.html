@@ -1,0 +1,50 @@
+{{- /*
+Renders a "short" as a social-style card. The author identity is configurable:
+per-page via `authorName`/`authorHandle`/`authorAvatar` front matter, otherwise
+from the site-wide [params.author] table. The name falls back to the site title.
+*/ -}}
+{{- $name := .Params.authorName }}
+{{- $handle := .Params.authorHandle }}
+{{- $avatar := .Params.authorAvatar }}
+{{- with site.Params.author }}
+  {{- if not $name }}{{ $name = .name }}{{ end }}
+  {{- if not $handle }}{{ $handle = .handle }}{{ end }}
+  {{- if not $avatar }}{{ $avatar = .avatar }}{{ end }}
+{{- end }}
+{{- $name = $name | default site.Title }}
+<div class="card">
+  <div class="card-content">
+    <div class="media">
+      {{- with $avatar }}
+      <div class="media-left">
+        <figure class="image is-48x48">
+          <img src="{{ . }}" alt="{{ $name }}">
+        </figure>
+      </div>
+      {{- end }}
+      <div class="media-content">
+        {{- /* Explicit mb-1/mb-0 instead of relying on Bulma's
+           `.title:has(+.subtitle)` margin reset, which isn't re-evaluated
+           reliably per card inside the CSS multi-column shorts masonry. */ -}}
+        <p class="title is-4 mb-1">{{ $name }}</p>
+        {{- with $handle }}<p class="subtitle is-6 mb-0">{{ . }}</p>{{ end }}
+      </div>
+    </div>
+
+    <div class="content">
+      {{ .Content }}
+    </div>
+    {{- if or (.Resources.GetMatch "*.{jpg,jpeg,png,webp}") .Params.image }}
+    {{- $photo := partial "page-image.html" (dict "page" $ "fill" "640x360" "sizes" "(max-width: 768px) 100vw, 33vw") }}
+    <figure class="image short-image">
+      {{ partial "lightbox.html" (dict "id" (printf "lb-short-%s" (anchorize .RelPermalink)) "inner" $photo "class" "lightbox-block" "label" .Title) }}
+    </figure>
+    {{- end }}
+    <div class="content is-small">
+      <span class="icon-text">
+        <span class="icon"><i class="iconoir-calendar"></i></span>
+        <span>{{ .Date | time.Format ":date_medium" }}</span>
+      </span>
+    </div>
+  </div>
+</div>

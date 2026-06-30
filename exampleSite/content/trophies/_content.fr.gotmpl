@@ -1,0 +1,7 @@
+{{- /*
+Trophies content adapter — French. Reuses the shared generation partial. The trophies
+data is NOT translated into French: `trophy/loc.html` has no "fr" key, so titles and
+trophy text fall back to English. Only the surrounding UI chrome is French. See
+_content.gotmpl.
+*/ -}}
+{{ partial "trophy-build.html" . }}

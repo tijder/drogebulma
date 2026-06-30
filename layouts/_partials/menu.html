@@ -1,0 +1,71 @@
+{{- /*
+Renders a menu for the given menu ID.
+
+@context {page} page The current page.
+@context {string} menuID The menu ID.
+
+@example: {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
+*/}}
+
+{{- $page := .page }}
+{{- $menuID := .menuID }}
+
+{{- with index site.Menus $menuID }}
+  <div class="navbar-start">
+    {{- partial "inline/menu/walk.html" (dict "page" $page "menuID" $menuID "menuEntries" .) }}
+  </div>
+{{- end }}
+
+{{- define "_partials/inline/menu/walk.html" }}
+  {{- $page := .page }}
+  {{- $menuID := .menuID }}
+  {{- range .menuEntries }}
+    {{- $name := .Name }}
+    {{- with .Identifier }}
+      {{- with T . }}
+        {{- $name = . }}
+      {{- end }}
+    {{- end }}
+    {{- $isActive := or ($page.IsMenuCurrent $menuID .) ($page.HasMenuCurrent $menuID .) }}
+    {{- /* Optional per-entry icon + accent colour (set in [menus.main.params]),
+       giving each item a coloured icon and accent line — the bulma.io look. */ -}}
+    {{- $icon := .Params.icon }}
+    {{- $color := .Params.color | default "primary" }}
+    {{- $accent := printf "--item-accent:var(--bulma-%s)" $color | safeCSS }}
+    {{- /* A pageRef that has no page in the current language (e.g. content that
+       only exists in the default content language, like trophies) yields an
+       empty .URL. Skip the entry entirely rather than linking across languages,
+       so navigating the English site never jumps to the Dutch site. */ -}}
+    {{- $url := .URL }}
+    {{- if .HasChildren }}
+      <div class="navbar-item has-dropdown is-hoverable{{ if $icon }} has-accent{{ end }}"{{ if $icon }} style="{{ $accent }}"{{ end }}>
+        <a class="navbar-link{{ if $isActive }} is-active{{ end }}">
+          {{- partial "inline/menu/label.html" (dict "name" $name "icon" $icon "color" $color) -}}
+        </a>
+        <div class="navbar-dropdown">
+          {{- with .Children }}
+            {{- partial "inline/menu/walk.html" (dict "page" $page "menuID" $menuID "menuEntries" .) }}
+          {{- end }}
+        </div>
+      </div>
+    {{- else if $url }}
+      <a class="navbar-item{{ if $isActive }} is-active{{ end }}{{ if $icon }} has-accent{{ end }}" href="{{ $url }}"{{ if $icon }} style="{{ $accent }}"{{ end }}
+        {{- if $isActive }} aria-current="page"{{ end }}>
+        {{- partial "inline/menu/label.html" (dict "name" $name "icon" $icon "color" $color) -}}
+      </a>
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- /* A menu label: a coloured icon + text when the entry sets an icon,
+   otherwise just the text. */ -}}
+{{- define "_partials/inline/menu/label.html" }}
+  {{- if .icon -}}
+    <span class="icon-text">
+      <span class="icon has-text-{{ .color }}"><i class="{{ .icon }}"></i></span>
+      <span>{{ .name }}</span>
+    </span>
+  {{- else -}}
+    {{ .name }}
+  {{- end }}
+{{- end }}

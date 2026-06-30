@@ -1,0 +1,58 @@
+{{- /*
+"Genoemd in": lists the regular content pages (posts/projects) that reference this
+game — either by tagging it in their `games` front-matter array (matched on matchKey)
+OR by mentioning it inline with a {{< game >}} / {{< trophy >}} shortcode or a manual
+link (detected because the rendered content then contains this game's permalink).
+Shorts are excluded here — they get their own full-card section via
+`trophy/related-shorts.html`. Renders nothing when no page references the game.
+
+Backlinks are gathered from the current (default-language) site, which is where the
+generated trophies pages live.
+
+@context {page} A generated trophies game page (needs .Params.matchKey).
+
+@example: {{ partial "trophy/backlinks.html" . }}
+*/ -}}
+{{- $self := . }}
+{{- $fm := where site.RegularPages "Params.games" "intersect" (slice .Params.matchKey) }}
+{{- $refs := slice }}
+{{- range site.RegularPages }}
+  {{- if ne .Section "shorts" }}
+  {{- if or (in $fm .) (strings.Contains .Content $self.RelPermalink) }}
+  {{- $refs = $refs | append . }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- with $refs }}
+<div class="box trophy-mentions mt-5">
+  <h2 class="title is-5">
+    <span class="icon-text">
+      <span class="icon"><i class="iconoir-bookmark"></i></span>
+      <span>{{ i18n "mentionedIn" }}</span>
+    </span>
+  </h2>
+  <div class="columns is-multiline">
+    {{- range . }}
+    <div class="column is-half">
+      <article class="media trophy-mention">
+        {{- with (.Resources.GetMatch "*.{jpg,jpeg,png,webp}") }}
+        <figure class="media-left">
+          <p class="image is-64x64">
+            {{ $thumb := .Fill "128x128 Center webp" }}
+            <img src="{{ $thumb.RelPermalink }}" alt="{{ $.Title }}" width="64" height="64" loading="lazy">
+          </p>
+        </figure>
+        {{- end }}
+        <div class="media-content">
+          <p class="title is-6 mb-1"><a class="stretched-link" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></p>
+          <p class="is-size-7 has-text-grey">
+            {{- with .CurrentSection }}{{ .LinkTitle }} &middot; {{ end }}
+            <time datetime="{{ .Date | time.Format "2006-01-02" }}">{{ .Date | time.Format ":date_long" }}</time>
+          </p>
+        </div>
+      </article>
+    </div>
+    {{- end }}
+  </div>
+</div>
+{{- end }}

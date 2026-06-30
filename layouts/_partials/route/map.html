@@ -1,0 +1,150 @@
+{{- /*
+Renders a static, no-JS route map from a GPX track resource.
+
+Parses the GPX (XML) with transform.Unmarshal, projects the track to Web
+Mercator pixels, fetches the covering OpenStreetMap raster tiles at build time
+(resources.GetRemote, cached by Hugo) and composes one inline <svg>: the tiles
+as an <image> grid with the route drawn as a <polyline> on top. Falls back to a
+plain background when a tile cannot be fetched (e.g. an offline build), so the
+route still renders. A stats line (distance / elevation gain / duration) is
+appended via route/stats.html.
+
+Config (site params, all optional, under params.route):
+  tileURL     tile template, default OSM      ("https://tile.openstreetmap.org/{z}/{x}/{y}.png")
+  userAgent   HTTP User-Agent for tile fetches (identifies this site to the tile
+              server). OSM's tile policy REQUIRES a UA that identifies the app and
+              gives a valid way to contact the operator — set this to something with
+              a real email/URL, e.g. "myblog route-map (you@example.org)". The
+              default is built from site.Title + site.BaseURL, which in dev resolves
+              to localhost and is NOT a valid contact, so set it for production.
+  attribution attribution label               (i18n "mapAttribution" otherwise)
+  width       target map width in px           (800)
+  height      target map height in px          (500)
+  maxZoom     upper zoom bound                  (16)
+  maxPoints   downsample the drawn polyline to  (500)
+
+@context {page}   page  The page owning the GPX resource.
+@context {string} src   The resource name to match (e.g. "track.gpx").
+
+@example: {{ partial "route/map.html" (dict "page" . "src" "track.gpx") }}
+*/ -}}
+{{- $page := .page -}}
+{{- $src := .src -}}
+{{- $cfg := site.Params.route | default dict -}}
+{{- $W := int ($cfg.width | default 800) -}}
+{{- $H := int ($cfg.height | default 500) -}}
+{{- $maxZoom := int ($cfg.maxZoom | default 16) -}}
+{{- $maxPoints := int ($cfg.maxPoints | default 500) -}}
+{{- $tileURL := $cfg.tileURL | default "https://tile.openstreetmap.org/{z}/{x}/{y}.png" -}}
+{{- $ua := $cfg.userAgent | default (printf "%s route-map (+%s)" site.Title site.BaseURL) -}}
+{{- $attribution := $cfg.attribution | default (i18n "mapAttribution") -}}
+{{- $res := $page.Resources.GetMatch $src -}}
+{{- if not $res -}}
+  {{- warnf "[route] no resource %q on %s" $src $page.Path -}}
+{{- else -}}
+  {{- $gpx := $res.Content | transform.Unmarshal -}}
+  {{- /* Normalise trk / trkseg / trkpt — each may be a single map or a slice. */ -}}
+  {{- $trks := $gpx.trk -}}
+  {{- if not (reflect.IsSlice $trks) }}{{ $trks = slice $trks }}{{ end -}}
+  {{- $pts := slice -}}
+  {{- range $trk := $trks -}}
+    {{- $segs := $trk.trkseg -}}
+    {{- if not (reflect.IsSlice $segs) }}{{ $segs = slice $segs }}{{ end -}}
+    {{- range $seg := $segs -}}
+      {{- $tp := $seg.trkpt -}}
+      {{- if not (reflect.IsSlice $tp) }}{{ $tp = slice $tp }}{{ end -}}
+      {{- range $tp }}{{ $pts = $pts | append . }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if lt (len $pts) 2 -}}
+    {{- warnf "[route] %q has fewer than 2 track points" $src -}}
+  {{- else -}}
+    {{- $pi := math.Pi -}}
+    {{- /* Project every point to Mercator unit fractions [0,1] and track bbox. */ -}}
+    {{- $xf := slice }}{{ $yf := slice -}}
+    {{- $minX := 2.0 }}{{ $maxX := -1.0 }}{{ $minY := 2.0 }}{{ $maxY := -1.0 -}}
+    {{- range $pts -}}
+      {{- $lat := index . "-lat" | float -}}
+      {{- $lon := index . "-lon" | float -}}
+      {{- $x := div (add $lon 180.0) 360.0 -}}
+      {{- $r := mul $lat (div $pi 180.0) -}}
+      {{- $sec := div 1.0 (math.Cos $r) -}}
+      {{- $y := div (sub 1.0 (div (math.Log (add (math.Tan $r) $sec)) $pi)) 2.0 -}}
+      {{- $xf = $xf | append $x }}{{ $yf = $yf | append $y -}}
+      {{- if lt $x $minX }}{{ $minX = $x }}{{ end }}{{ if gt $x $maxX }}{{ $maxX = $x }}{{ end -}}
+      {{- if lt $y $minY }}{{ $minY = $y }}{{ end }}{{ if gt $y $maxY }}{{ $maxY = $y }}{{ end -}}
+    {{- end -}}
+    {{- /* Pick the largest integer zoom whose bbox fits the target box (+padding). */ -}}
+    {{- $pad := 1.15 -}}
+    {{- $spanX := mul (sub $maxX $minX) $pad -}}
+    {{- $spanY := mul (sub $maxY $minY) $pad -}}
+    {{- $z := $maxZoom -}}
+    {{- if and (gt $spanX 0.0) (gt $spanY 0.0) -}}
+      {{- $zx := div (math.Log (div (float $W) (mul $spanX 256.0))) (math.Log 2.0) -}}
+      {{- $zy := div (math.Log (div (float $H) (mul $spanY 256.0))) (math.Log 2.0) -}}
+      {{- $zf := math.Floor (math.Min $zx $zy) -}}
+      {{- $z = int (math.Max 0.0 (math.Min (float $maxZoom) $zf)) -}}
+    {{- end -}}
+    {{- $world := mul 256.0 (math.Pow 2.0 $z) -}}
+    {{- /* Tile grid covering the bbox. */ -}}
+    {{- $minTX := int (math.Floor (div (mul $minX $world) 256.0)) -}}
+    {{- $maxTX := int (math.Floor (div (mul $maxX $world) 256.0)) -}}
+    {{- $minTY := int (math.Floor (div (mul $minY $world) 256.0)) -}}
+    {{- $maxTY := int (math.Floor (div (mul $maxY $world) 256.0)) -}}
+    {{- $originX := mul (float $minTX) 256.0 -}}
+    {{- $originY := mul (float $minTY) 256.0 -}}
+    {{- $cols := add (sub $maxTX $minTX) 1 -}}
+    {{- $rows := add (sub $maxTY $minTY) 1 -}}
+    {{- $cw := mul $cols 256 -}}{{ $ch := mul $rows 256 -}}
+    {{- /* Build the route polyline in canvas pixels (downsampled to maxPoints). */ -}}
+    {{- $n := len $pts -}}
+    {{- $step := 1 -}}
+    {{- if gt $n $maxPoints }}{{ $step = int (math.Ceil (div (float $n) (float $maxPoints))) }}{{ end -}}
+    {{- $poly := slice -}}
+    {{- range $i := seq 0 (sub $n 1) -}}
+      {{- if or (eq (mod $i $step) 0) (eq $i (sub $n 1)) -}}
+        {{- $px := sub (mul (index $xf $i) $world) $originX -}}
+        {{- $py := sub (mul (index $yf $i) $world) $originY -}}
+        {{- $poly = $poly | append (printf "%.1f,%.1f" $px $py) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $points := delimit $poly " " -}}
+    {{- $sx := sub (mul (index $xf 0) $world) $originX -}}
+    {{- $sy := sub (mul (index $yf 0) $world) $originY -}}
+    {{- $ex := sub (mul (index $xf (sub $n 1)) $world) $originX -}}
+    {{- $ey := sub (mul (index $yf (sub $n 1)) $world) $originY -}}
+{{- $lbid := printf "lb-route-%s" (anchorize $src) -}}
+<figure class="route-map" style="max-width:{{ $cw }}px">
+  <span id="{{ $lbid }}" class="lightbox lightbox-route">
+  <a class="lightbox-open" href="#{{ $lbid }}" aria-label="{{ i18n "enlargeImage" }}">
+  <svg viewBox="0 0 {{ $cw }} {{ $ch }}" width="{{ $cw }}" height="{{ $ch }}" role="img" aria-label="{{ with $page.Title }}{{ . }} — {{ end }}{{ i18n "routeMap" }}" preserveAspectRatio="xMidYMid meet">
+    {{- range $ty := seq $minTY $maxTY -}}
+      {{- range $tx := seq $minTX $maxTX -}}
+        {{- $url := $tileURL -}}
+        {{- $url = replace $url "{z}" (string $z) -}}
+        {{- $url = replace $url "{x}" (string $tx) -}}
+        {{- $url = replace $url "{y}" (string $ty) -}}
+        {{- $opts := dict "headers" (dict "User-Agent" $ua) -}}
+        {{- with try (resources.GetRemote $url $opts) -}}
+          {{- with .Err -}}
+            {{- warnf "[route] tile fetch failed %q: %s" $url . -}}
+          {{- else with .Value -}}
+            {{- $ix := mul (sub $tx $minTX) 256 -}}{{ $iy := mul (sub $ty $minTY) 256 -}}
+    <image href="{{ .RelPermalink }}" x="{{ $ix }}" y="{{ $iy }}" width="256" height="256"/>
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    <polyline points="{{ $points }}" fill="none" stroke="#ffffff" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.8"/>
+    <polyline points="{{ $points }}" fill="none" stroke="#cc0f35" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="{{ printf "%.1f" $sx }}" cy="{{ printf "%.1f" $sy }}" r="5" fill="#ffffff" stroke="#23d160" stroke-width="3"/>
+    <circle cx="{{ printf "%.1f" $ex }}" cy="{{ printf "%.1f" $ey }}" r="5" fill="#ffffff" stroke="#cc0f35" stroke-width="3"/>
+  </svg>
+  </a>
+  <a class="lightbox-backdrop" href="#lightbox-closed" aria-label="{{ i18n "closeImage" }}"></a>
+  </span>
+  {{ partial "route/stats.html" (dict "pts" $pts "pi" $pi) }}
+  <figcaption class="route-attribution">{{ $attribution | safeHTML }}</figcaption>
+</figure>
+  {{- end -}}
+{{- end -}}

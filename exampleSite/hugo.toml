@@ -1,0 +1,101 @@
+# Voorbeeldsite voor het DrogeBulma-thema.
+# Draaien vanuit deze map:  hugo server --themesDir ../..
+baseURL = "https://tijder.github.io/drogebulma/"
+theme = "drogebulma"
+defaultContentLanguage = "nl"
+enableRobotsTXT = true
+title = "DrogeBulma"
+
+[pagination]
+  pagerSize = 5
+
+[params]
+  description = "Een meertalig Hugo-thema op basis van Bulma en Iconoir."
+  image = "/share.png"
+  twitter = "@drogebulma"
+  themeColor = "#485fc7"
+  [params.author]
+    name = "Demo Auteur"
+    handle = "@demo"
+    avatar = "/avatar.png"
+  [params.trophies]
+    # Base path (under assets/) where local trophy images are mounted.
+    imageBase = "trophies"
+  [params.route]
+    # OSM's tile policy REQUIRES a User-Agent that identifies your site and gives a
+    # valid contact. Set this to your own app name + a real email/URL — the default
+    # falls back to the (localhost in dev) baseURL, which OSM rejects and blocks.
+    userAgent = "DrogeBulma demo route-map (https://tijder.github.io/drogebulma/)"
+    # For non-trivial use, point tileURL at a provider/self-hosted tiles instead of
+    # OSM's volunteer servers (bulk build-time fetching violates their policy):
+    # tileURL = "https://tiles.example.com/{z}/{x}/{y}.png"
+
+# Custom taxonomies for trophy filtering. `tag` is kept so posts/projects keep working.
+[taxonomies]
+  tag = "tags"
+  platform = "platforms"
+  trophytype = "trophytypes"
+
+[languages]
+  [languages.nl]
+    label = "Nederlands"
+    locale = "nl"
+    weight = 1
+    title = "DrogeBulma"
+  [languages.en]
+    label = "English"
+    locale = "en"
+    weight = 2
+    title = "DrogeBulma"
+  [languages.fr]
+    label = "Français"
+    locale = "fr"
+    weight = 3
+    title = "DrogeBulma"
+
+# Menu labels are translated per language via `T .Identifier` (see _partials/menu.html),
+# so each entry sets an identifier with a matching `menu_*` key in every i18n/*.toml.
+[[menus.main]]
+  identifier = "menu_shorts"
+  name = "Shorts"
+  pageRef = "/shorts"
+  weight = 1
+  [menus.main.params]
+    icon = "iconoir-chat-bubble"
+    color = "primary"
+[[menus.main]]
+  identifier = "menu_news"
+  name = "Nieuws"
+  pageRef = "/posts"
+  weight = 2
+  [menus.main.params]
+    icon = "iconoir-megaphone"
+    color = "link"
+[[menus.main]]
+  identifier = "menu_projects"
+  name = "Projecten"
+  pageRef = "/projects"
+  weight = 3
+  [menus.main.params]
+    icon = "iconoir-light-bulb"
+    color = "danger"
+[[menus.main]]
+  identifier = "menu_trophies"
+  name = "Trofeeën"
+  pageRef = "/trophies"
+  weight = 4
+  [menus.main.params]
+    icon = "iconoir-trophy"
+    color = "warning"
+[[menus.main]]
+  identifier = "menu_cv"
+  name = "CV"
+  pageRef = "/cv"
+  weight = 5
+  [menus.main.params]
+    icon = "iconoir-user"
+    color = "info"
+
+[outputs]
+  home = ["html", "rss"]
+  section = ["html", "rss"]

@@ -1,0 +1,29 @@
+{{- $hasImage := or (.Resources.GetMatch "*.{jpg,jpeg,png,webp}") .Params.image }}
+<div class="card">
+  <div class="fixed-grid has-12-cols">
+    <div class="grid">
+
+      <div class="cell {{ if $hasImage }}is-col-span-7{{ else }}is-col-span-12{{ end }}">
+        <div class="card-content">
+          <div class="content">
+            <h2 class="title is-5"><a class="stretched-link" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+            {{ partial "card-summary.html" . }}
+          </div>
+          {{ partial "card-meta.html" . }}
+        </div>
+      </div>
+
+      {{- if $hasImage }}
+      <div class="cell is-col-span-5">
+        <div class="card-image">
+          <figure class="image">
+            {{ partial "page-image.html" (dict "page" . "fill" "600x400" "sizes" "(max-width: 768px) 100vw, 40vw") }}
+          </figure>
+        </div>
+      </div>
+      {{- end }}
+
+    </div>
+  </div>
+</div>
+<br>

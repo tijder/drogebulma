@@ -1,0 +1,74 @@
+{{- /*
+Shared trophies content-adapter body. Called from content/trophies/_content.gotmpl
+(per language) so the trophies section is generated once per content language. The
+context (.) is the content-adapter context: it exposes .Site and .AddPage.
+
+Reads site.Data.trophies (point it at the real export by renaming the data file),
+computes per-game aggregates, and adds one page per game in the current language.
+The page title is localized to .Site.Language.Lang; trophy/source name+description
+stay as raw language maps in params and are resolved at render time by the theme's
+`trophy/loc.html` partial (so a trophy name can still be matched across languages).
+
+Assigns the `platforms` and `trophytypes` taxonomies via params.
+*/ -}}
+{{- $lang := .Site.Language.Lang }}
+{{- $data := hugo.Data.trophies }}
+{{- range $data.games }}
+  {{- $game := . }}
+  {{- $earned := 0 }}{{ $total := 0 }}
+  {{- $platforms := slice }}{{ $types := slice }}
+  {{- $typeEarned := dict }}{{ $typeTotal := dict }}
+  {{- $platEarned := dict }}{{ $platTotal := dict }}
+  {{- $header := "" }}{{ $headerPlatform := "" }}{{ $headerId := "" }}
+  {{- $lastEarnedAt := "" }}
+  {{- /* Per-source pct + the single best-performing source drive the overview
+         and the source ordering — see CLAUDE.md "highest progression first". */}}
+  {{- $sources := slice }}
+  {{- $bestPct := -1 }}{{ $bestEarned := 0 }}{{ $bestTotal := 0 }}
+  {{- range $s := .sources }}
+    {{- $earned = add $earned $s.earned }}
+    {{- $total = add $total $s.total }}
+    {{- $platforms = $platforms | append $s.platform }}
+    {{- $platEarned = merge $platEarned (dict $s.platform (add (index $platEarned $s.platform | default 0) $s.earned)) }}
+    {{- $platTotal = merge $platTotal (dict $s.platform (add (index $platTotal $s.platform | default 0) $s.total)) }}
+    {{- with $s.images }}{{ with .header }}{{ if not $header }}{{ $header = . }}{{ $headerPlatform = $s.platform }}{{ $headerId = $s.id }}{{ end }}{{ end }}{{ end }}
+    {{- range $tr := $s.trophies }}
+      {{- $types = $types | append $tr.type }}
+      {{- $typeTotal = merge $typeTotal (dict $tr.type (add (index $typeTotal $tr.type | default 0) 1)) }}
+      {{- if $tr.earned }}
+        {{- $typeEarned = merge $typeEarned (dict $tr.type (add (index $typeEarned $tr.type | default 0) 1)) }}
+        {{- with $tr.earnedAt }}{{ if gt . $lastEarnedAt }}{{ $lastEarnedAt = . }}{{ end }}{{ end }}
+      {{- end }}
+    {{- end }}
+    {{- $sPct := 0 }}{{ if gt $s.total 0 }}{{ $sPct = int (math.Round (math.Div (math.Mul $s.earned 100.0) $s.total)) }}{{ end }}
+    {{- $sources = $sources | append (merge $s (dict "pct" $sPct)) }}
+    {{- if gt $sPct $bestPct }}{{ $bestPct = $sPct }}{{ $bestEarned = $s.earned }}{{ $bestTotal = $s.total }}{{ end }}
+  {{- end }}
+  {{- $pct := 0 }}{{ if gt $total 0 }}{{ $pct = int (math.Round (math.Div (math.Mul $earned 100.0) $total)) }}{{ end }}
+  {{- if lt $bestPct 0 }}{{ $bestPct = 0 }}{{ end }}
+  {{- $.AddPage (dict
+      "kind" "page"
+      "path" (anchorize $game.matchKey)
+      "title" (partial "trophy/loc.html" (dict "value" $game.title "lang" $lang))
+      "params" (dict
+        "matchKey" $game.matchKey
+        "sources" (sort $sources "pct" "desc")
+        "earned" $earned
+        "total" $total
+        "pct" $pct
+        "bestEarned" $bestEarned
+        "bestTotal" $bestTotal
+        "bestPct" $bestPct
+        "header" $header
+        "headerPlatform" $headerPlatform
+        "headerId" $headerId
+        "lastEarnedAt" $lastEarnedAt
+        "platforms" (uniq $platforms)
+        "trophytypes" (uniq $types)
+        "typeEarned" $typeEarned
+        "typeTotal" $typeTotal
+        "platformEarned" $platEarned
+        "platformTotal" $platTotal
+      )
+  ) }}
+{{- end }}
